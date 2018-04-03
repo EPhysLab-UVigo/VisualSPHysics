@@ -6,6 +6,8 @@ VisualSPHysics also includes a foam simulator for DualSPHysics fluid simulations
 More details about this tool can be read on the conference paper [Advanced fluid visualisation with DualSPHysics and Blender
 ](https://www.researchgate.net/publication/321420314_Advanced_fluid_visualisation_with_DualSPHysics_and_Blender).
 
+![](http://dual.sphysics.org/blender/img/screenshot.png)
+
 ## Examples
 
 https://www.youtube.com/watch?v=EvSDFRfJToQ
