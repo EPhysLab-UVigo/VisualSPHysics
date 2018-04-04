@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
  
-PROJECT(diffuseparticlesmodule)
-
 find_package(PythonLibs 3 REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
@@ -12,7 +10,7 @@ set(SRCS FluidData.cpp PlyWriter.cpp VtkDWriter.cpp Ops.cpp DiffuseCalculator.cp
  
 #add_executable(diffuse_parts ${SRCS})
 
-add_library(diffuseparticlesmodule SHARED ${SRCS})
+add_library(diffuseparticles SHARED ${SRCS})
 
 add_subdirectory( rply )
 
@@ -29,8 +27,8 @@ if (NOT WIN32)
 endif ()
  
 if(VTK_LIBRARIES)
-  target_link_libraries(diffuseparticlesmodule ${VTK_LIBRARIES} ${PYTHON_LIBRARIES})
+  target_link_libraries(diffuseparticles ${VTK_LIBRARIES} ${PYTHON_LIBRARIES})
 else()
-  target_link_libraries(diffuseparticlesmodule vtkHybrid ${PYTHON_LIBRARIES})
+  target_link_libraries(diffuseparticles vtkHybrid ${PYTHON_LIBRARIES})
 endif()
 
