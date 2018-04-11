@@ -435,8 +435,8 @@ class OBJECT_OT_RunFoamSimulation(bpy.types.Operator):
         if parseXML(context):
             print("File parsed!")
             diffuseparticles.run(
-                bpy.path.abspath(context.object['DsphPathName']),   # Input path
-                context.object['DsphBaseName'],                     # Input files prefix
+                bpy.path.abspath(context.scene.DsphFoamInputPath),  # Input path
+                context.scene.DsphFoamInputPrefix,                  # Input files prefix
                 bpy.path.abspath(context.scene.DsphFoamPath),       # Output path
                 context.scene.DsphFoamPrefix,                       # Output files prefix
                 "",                                                 # Exclusion zone file
@@ -474,7 +474,7 @@ class OBJECT_OT_RunFoamSimulation(bpy.types.Operator):
         fileName = context.scene.DsphFoamPrefix + str(context.scene.DsphFoamStart).zfill(4) + ".vtk"
 
         createObject (context.scene.DsphFoamPrefix + "_FOAM",
-            fileName, 
+            fileName,
             context.scene.DsphFoamPath,
             context.scene.DsphFoamPrefix,
             ".vtk",
@@ -497,105 +497,119 @@ class FoamSimulationPanel(bpy.types.Panel):
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"
     bl_context = "physics"
+
+    bpy.types.Scene.DsphFoamInputPath = bpy.props.StringProperty(name = "Input Path",
+                                                                 description = "Input path of particle data.",
+                                                                 subtype = 'DIR_PATH')
+    
+    bpy.types.Scene.DsphFoamInputPrefix = bpy.props.StringProperty(name = "Input Prefix",
+                                                                   description = "Input files preffix")
     
     bpy.types.Scene.DsphFoamPath = bpy.props.StringProperty(name = "Output Path",
-        description = "Output path for foam simulation",
-        subtype = 'DIR_PATH')
-        
+                                                            description = "Output path for foam simulation",
+                                                            subtype = 'DIR_PATH')
+    
     bpy.types.Scene.DsphFoamPrefix = bpy.props.StringProperty(name = "Output Prefix",
-        description = "Output files preffix")
-        
+                                                              description = "Output files preffix")
+    
     bpy.types.Scene.DsphFoamXML = bpy.props.StringProperty(name = "XML",
-        description = "DualSPHysics XML file",
-        subtype = 'FILE_PATH')
-        
+                                                           description = "DualSPHysics XML file",
+                                                           subtype = 'FILE_PATH')
+    
     bpy.types.Scene.DsphFoamStart = bpy.props.IntProperty(name = "Starting step",
-        description = "First step of the foam simulation")
-        
+                                                          description = "First step of the foam simulation")
+    
     bpy.types.Scene.DsphFoamEnd = bpy.props.IntProperty(name = "Ending step",
-        description = "Last step of the foam simulation")
-        
+                                                        description = "Last step of the foam simulation")
+    
     bpy.types.Scene.DsphFoamMinTrappedAir = bpy.props.FloatProperty(name = "Min Trapped Air Threshold",
-        description = "Min Trapped Air Threshold",
-        min = 0)
+                                                                    description = "Min Trapped Air Threshold",
+                                                                    min = 0,
+                                                                    default = 5.)
 
     bpy.types.Scene.DsphFoamMaxTrappedAir = bpy.props.FloatProperty(name = "Max Trapped Air Threshold",
-        description = "Max Trapped Air Threshold",
-        min = 0)
-        
+                                                                    description = "Max Trapped Air Threshold",
+                                                                    min = 0,
+                                                                    default = 20.)
+    
     bpy.types.Scene.DsphFoamMinWaveCrests = bpy.props.FloatProperty(name = "Min Wave Crests Threshold",
-        description = "Min Wave Crests Threshold",
-        min = 0)
+                                                                    description = "Min Wave Crests Threshold",
+                                                                    min = 0,
+                                                                    default = 2.)
 
     bpy.types.Scene.DsphFoamMaxWaveCrests = bpy.props.FloatProperty(name = "Max Wave Crests Threshold",
-        description = "Max Wave Crests Threshold",
-        min = 0)
-        
+                                                                    description = "Max Wave Crests Threshold",
+                                                                    min = 0,
+                                                                    default = 8.)
+    
     bpy.types.Scene.DsphFoamMinKinetic = bpy.props.FloatProperty(name = "Min Kinetic Energy Threshold",
-        description = "Min Kinetic Energy Threshold",
-        min = 0)
+                                                                 description = "Min Kinetic Energy Threshold",
+                                                                 min = 0,
+                                                                 default = 5.)
 
     bpy.types.Scene.DsphFoamMaxKinetic = bpy.props.FloatProperty(name = "Max Kinetic Energy Threshold",
-        description = "Max Kinetic Energy Threshold",
-        min = 0)
-        
+                                                                 description = "Max Kinetic Energy Threshold",
+                                                                 min = 0,
+                                                                 default = 50.)
+    
     bpy.types.Scene.DsphFoamTAMult = bpy.props.FloatProperty(name = "Trapper air multiplier",
-        description = "Amount of diffuse material created by trapper air",
-        min = 0)
-        
+                                                             description = "Amount of diffuse material created by trapper air",
+                                                             min = 0,
+                                                             default = 40.)
+    
     bpy.types.Scene.DsphFoamWCMult = bpy.props.FloatProperty(name = "Wave crests multiplier",
-        description = "Amount of diffuse material created by wave crests",
-        min = 0)
-        
+                                                             description = "Amount of diffuse material created by wave crests",
+                                                             min = 0,
+                                                             default = 40.)
+    
     bpy.types.Scene.DsphFoamSprayDensity = bpy.props.FloatProperty(name = "Max spray density factor",
-        description = "Max spray density factor",
-        min = 0,
-        default = 6.0)
-        
+                                                                   description = "Max spray density factor",
+                                                                   min = 0,
+                                                                   default = 6.0)
+    
     bpy.types.Scene.DsphFoamBubblesDensity = bpy.props.FloatProperty(name = "Min bubbles density factor",
-        description = "Min bubbles density factor",
-        min = 0,
-        default= 10.0)
-        
+                                                                     description = "Min bubbles density factor",
+                                                                     min = 0,
+                                                                     default= 9.0)
+    
     bpy.types.Scene.DsphFoamLifetime = bpy.props.FloatProperty(name = "Foam lifetime factor",
-        description = "Foam particles lifetime factor",
-        min = 0,
-        default= 7.0)
-        
+                                                               description = "Foam particles lifetime factor",
+                                                               min = 0,
+                                                               default= 10.0)
+    
     bpy.types.Scene.DsphFoamBuoyancy = bpy.props.FloatProperty(name = "Buoyancy Control",
-        description = "Bubble particles buoyancy control",
-        min = 0,
-        max = 1,
-        default= 0.8)
-        
+                                                               description = "Bubble particles buoyancy control",
+                                                               min = 0,
+                                                               max = 1,
+                                                               default= 0.8)
+    
     bpy.types.Scene.DsphFoamDrag = bpy.props.FloatProperty(name = "Drag control",
-        description = "Bubble particles drag control",
-        min = 0,
-        max = 1,
-        default= 0.5)
-                
-    bpy.types.Scene.DsphFoamCustomDomain = bpy.props.BoolProperty(
-        name = "Enable custom domain limits", 
-        description = "Enable custom domain limits",
-        default = False)
-        
+                                                           description = "Bubble particles drag control",
+                                                           min = 0,
+                                                           max = 1,
+                                                           default= 0.5)
+    
+    bpy.types.Scene.DsphFoamCustomDomain = bpy.props.BoolProperty(name = "Enable custom domain limits", 
+                                                                  description = "Enable custom domain limits",
+                                                                  default = False)
+    
     bpy.types.Scene.DsphFoamMinX = bpy.props.FloatProperty(name = "Min X",
-        description = "Min X")
+                                                           description = "Min X")
 
     bpy.types.Scene.DsphFoamMinY = bpy.props.FloatProperty(name = "Min Y",
-        description = "Min Y")
+                                                           description = "Min Y")
 
     bpy.types.Scene.DsphFoamMinZ = bpy.props.FloatProperty(name = "Min Z",
-        description = "Min Z")
+                                                           description = "Min Z")
 
     bpy.types.Scene.DsphFoamMaxX = bpy.props.FloatProperty(name = "Max X",
-        description = "Max X")
+                                                           description = "Max X")
 
     bpy.types.Scene.DsphFoamMaxY = bpy.props.FloatProperty(name = "Max Y",
-        description = "Max Y")
+                                                           description = "Max Y")
 
     bpy.types.Scene.DsphFoamMaxZ = bpy.props.FloatProperty(name = "Max Z",
-        description = "Max Z")
+                                                           description = "Max Z")
         
     # Hidden properties
     bpy.types.Scene.DsphFoamH = bpy.props.FloatProperty(name = "H")
@@ -613,6 +627,13 @@ class FoamSimulationPanel(bpy.types.Panel):
         ds = False
         
         layout.label("File paths:")
+
+        row = layout.row()
+        row.alert = not os.path.isdir(bpy.path.abspath(context.scene.DsphFoamPath))
+        ds = ds or row.alert
+        row.prop(context.scene, "DsphFoamInputPath")
+        
+        layout.prop(context.scene, "DsphFoamInputPrefix")
         
         row = layout.row()
         row.alert = not os.path.isdir(bpy.path.abspath(context.scene.DsphFoamPath))
