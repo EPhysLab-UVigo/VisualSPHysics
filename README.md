@@ -8,6 +8,9 @@ More details about this tool can be read on the conference paper [Advanced fluid
 
 ![](http://dual.sphysics.org/blender/img/screenshot.png)
 
+## Instructions
+Check out the [wiki](https://github.com/EPhysLab-UVigo/VisualSPHysics/wiki) to read the installation and usage documentation.
+
 ## Examples
 
 https://www.youtube.com/watch?v=EvSDFRfJToQ
