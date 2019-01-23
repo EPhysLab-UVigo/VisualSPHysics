@@ -59,7 +59,9 @@
 #define SURFACE 0.75
 
 // Clamping function
+#ifndef _MSVC
 #pragma omp declare simd
+#endif
 double DiffuseCalculator::phi(double I, double tmin, double tmax) {
   return (fmin(I, tmax) - fmin(I, tmin)) / (tmax - tmin);
 }
@@ -165,7 +167,7 @@ void DiffuseCalculator::runSimulation() {
   std::mt19937 gen(rd());
   std::uniform_real_distribution<> xunif(0, 1);
 
-  unsigned int difId = 0;
+  long difId = 0;
 
   // Persistent particle vector
   std::vector<std::array<double, 3>> ppPosit, ppVel;
@@ -189,7 +191,7 @@ void DiffuseCalculator::runSimulation() {
 
     BucketContainer<particle> &f = *(file.getBucketContainer());
 
-    unsigned int npoints =
+    long npoints =
         f.getNElements(); // output->GetPoints()->GetNumberOfPoints();
 
     // Create a vector with the scaled velocity difference for each particle
@@ -211,14 +213,14 @@ void DiffuseCalculator::runSimulation() {
      * First pass: trapped air potential, Energy and colorfield
      */
     {
-#pragma omp parallel for schedule(auto)
-      for (unsigned int nebucket = 0; nebucket < buckets.size();
+#pragma omp parallel for schedule(guided)
+      for (long nebucket = 0; nebucket < buckets.size();
            nebucket++) { // Iterate over all buckets
         auto &bucket = buckets[nebucket].second;
         auto sbuckets = f.getSurroundingBuckets(buckets[nebucket].first);
 
         for (auto &pi : bucket) { // Iterate over each particle in the bucket
-          unsigned int i = pi.id;
+          long i = pi.id;
           auto vi = pi.vel, xi = pi.pos;
 
           for (auto sb : sbuckets) { // Iterate over surrounding buckets
@@ -279,14 +281,14 @@ void DiffuseCalculator::runSimulation() {
     {
       wall_timer = omp_get_wtime();
 
-#pragma omp parallel for schedule(auto)
-      for (unsigned int nebucket = 0; nebucket < buckets.size();
+#pragma omp parallel for schedule(guided)
+      for (long nebucket = 0; nebucket < buckets.size();
            nebucket++) { // Iterate over all buckets
         auto &bucket = buckets[nebucket].second;
         auto sbuckets = f.getSurroundingBuckets(buckets[nebucket].first);
 
         for (auto &pi : bucket) { // Iterate over each particle in the bucket
-          unsigned int i = pi.id;
+          long i = pi.id;
 
           for (auto sb : sbuckets) { // Iterate over surrounding buckets
             for (auto &pj : *sb) {   // Iterate over each particle in the bucket
@@ -318,13 +320,13 @@ void DiffuseCalculator::runSimulation() {
 
       wall_timer = omp_get_wtime();
 
-#pragma omp parallel for schedule(auto)
-      for (unsigned int nebucket = 0; nebucket < buckets.size(); nebucket++) { // Iterate over all buckets
+#pragma omp parallel for schedule(guided)
+      for (long nebucket = 0; nebucket < buckets.size(); nebucket++) { // Iterate over all buckets
         auto &bucket = buckets[nebucket].second;
         std::vector<std::vector<particle> *> sbuckets;
 
         for (auto &pi : bucket) { // Iterate over each particle in the bucket
-          unsigned int i = pi.id;
+          long i = pi.id;
           if (colorField[i] < SURFACE) {
             if (sbuckets.size() == 0)
               sbuckets = f.getSurroundingBuckets(buckets[nebucket].first);
@@ -355,8 +357,12 @@ void DiffuseCalculator::runSimulation() {
      */
     wall_timer = omp_get_wtime();
 
+#ifndef _MSVC
 #pragma omp parallel for simd
-    for (unsigned int i = 0; i < npoints; i++) {
+#else
+#pragma omp parallel for schedule(static)
+#endif
+    for (long i = 0; i < npoints; i++) {
       waveCrest[i] = phi(waveCrest[i], sp.MINWC, sp.MAXWC);
       Ita[i] = phi(Ita[i], sp.MINTA, sp.MAXTA);
       energy[i] = phi(energy[i], sp.MINK, sp.MAXK);
@@ -364,15 +370,17 @@ void DiffuseCalculator::runSimulation() {
 
     std::cout << "Time: " << omp_get_wtime() - wall_timer << std::endl;
 
-    unsigned int npdiffuse = 0;
+    long npdiffuse = 0;
 
     std::cerr << "[Stage 5] number of diffuse particles generated: ";
     /*
      * Fifth pass: number of diffuse particles generated
      */
     wall_timer = omp_get_wtime();
+#ifndef _MSVC
 #pragma omp parallel for simd reduction(+ : npdiffuse)
-    for (unsigned int i = 0; i < npoints; i++) {
+#endif
+    for (long i = 0; i < npoints; i++) {
       ndiffuse[i] = std::floor(
           energy[i] * (sp.KTA * Ita[i] + sp.KWC * waveCrest[i]) * sp.TIMESTEP);
       npdiffuse += ndiffuse[i];
@@ -400,14 +408,14 @@ void DiffuseCalculator::runSimulation() {
     wall_timer = omp_get_wtime();
 
     {
-      unsigned int idif = 0;
+      long idif = 0;
 
-#pragma omp parallel for schedule(auto)
-      for (unsigned int nebucket = 0; nebucket < buckets.size(); nebucket++) { // Iterate over all buckets
+#pragma omp parallel for schedule(guided)
+      for (long nebucket = 0; nebucket < buckets.size(); nebucket++) { // Iterate over all buckets
         auto &bucket = buckets[nebucket].second;
 
         for (auto &pi : bucket) { // Iterate over each particle in the bucket
-          unsigned int i = pi.id;
+          long i = pi.id;
 
           if (ndiffuse[i] >= 1) {
             std::array<double, 3> pos = pi.pos, vel = pi.vel;
@@ -443,10 +451,10 @@ void DiffuseCalculator::runSimulation() {
                 ops::normalize(std::array<double, 3>{{vel[0], vel[1], vel[2]}});
 
             for (int j = 0; j < ndiffuse[i]; j++) {
-              double h = tempRand[i * 3] *
+              double h = tempRand[idif * 3] *
                          (ops::magnitude(std::array<double, 3>{{vel[0], vel[1], vel[2]}}) * sp.TIMESTEP) *
 												 .5,
-                     r = sp.h * sqrt(tempRand[i * 3 + 1]), theta = tempRand[i * 3 + 2] * 2 * M_PI;
+                     r = sp.h * sqrt(tempRand[idif * 3 + 1]), theta = tempRand[idif * 3 + 2] * 2 * M_PI;
 
               // Position of newly created diffuse particle
               diffusePosit[idif] = {{pos[0] + r * cos(theta) * e1[0] +
@@ -483,8 +491,8 @@ void DiffuseCalculator::runSimulation() {
     std::cerr << "[Stage 7] classify particles. ";
     wall_timer = omp_get_wtime();
 
-#pragma omp parallel for schedule(auto)
-    for (unsigned int i = 0; i < npdiffuse; i++) {
+#pragma omp parallel for schedule(guided)
+    for (long i = 0; i < npdiffuse; i++) {
       auto pxd = diffusePosit[i];
       auto sbuckets = f.getSurroundingBuckets(pxd);
       for (auto sb : sbuckets) { // Iterate over surrounding buckets
@@ -504,8 +512,8 @@ void DiffuseCalculator::runSimulation() {
 
     wall_timer = omp_get_wtime();
 
-#pragma omp parallel for schedule(auto)
-    for (unsigned int i = 0; i < ppIds.size(); i++) {
+#pragma omp parallel for schedule(guided)
+    for (long i = 0; i < ppIds.size(); i++) {
       auto &pxd = ppPosit[i];
 			auto temppos = ppPosit[i];
       std::array<double, 3> num{{0, 0, 0}};
@@ -572,8 +580,8 @@ void DiffuseCalculator::runSimulation() {
 
     wall_timer = omp_get_wtime();
 
-    //#pragma omp parallel for schedule(auto)
-    for (unsigned int i = 0; i < ppIds.size(); i++) {
+    // #pragma omp parallel for schedule(auto)
+    for (long i = 0; i < ppIds.size(); i++) {
       // Decrease TTL for foam particles
       if (ppDensity[i] > sp.SPRAY && ppDensity[i] < sp.BUBBLES)
         ppTTL[i]--;
@@ -622,17 +630,21 @@ void DiffuseCalculator::runSimulation() {
 
     wall_timer = omp_get_wtime();
 
+#ifndef _MSVC
 #pragma omp parallel sections
+#endif
     {
 
+#ifndef _MSVC
 #pragma omp section
+#endif
       if (sp.text_files) {
         // Save diffuse particles to simple text files
         std::string outFilename = sp.outputPath + sp.outputPreffix + seqnum + ".txt";
         std::ofstream tfile(outFilename, std::ios::trunc);
         tfile.setf(std::ios::scientific);
 
-        for (unsigned int i = 0; i < ppIds.size(); i++) {
+        for (long i = 0; i < ppIds.size(); i++) {
           tfile << ppPosit[i][0] << " " << ppPosit[i][1] << " "
                 << ppPosit[i][2];
           int ttype = 1;
@@ -650,7 +662,9 @@ void DiffuseCalculator::runSimulation() {
       // 3 ply files per step will be generated one for foam, one spray and a
       // third one for bubbles
 
+#ifndef _MSVC
 #pragma omp section
+#endif
       if (sp.ply_files) {
         std::vector<std::array<double, 3>> material;
         std::string plyFilename = sp.outputPath + sp.outputPreffix + seqnum +
@@ -661,7 +675,7 @@ void DiffuseCalculator::runSimulation() {
                          sp.MINZ, sp.MAXZ, sp.h);
         output.setComment(comment);
 
-        for (unsigned int i = 0; i < ppIds.size(); i++)
+        for (long i = 0; i < ppIds.size(); i++)
           if (ppDensity[i] < sp.SPRAY)
             material.push_back(ppPosit[i]);
 
@@ -669,7 +683,9 @@ void DiffuseCalculator::runSimulation() {
         output.write();
       }
 
+#ifndef _MSVC
 #pragma omp section
+#endif
       if (sp.ply_files) {
         std::vector<std::array<double, 3>> material;
         std::string plyFilename =
@@ -680,7 +696,7 @@ void DiffuseCalculator::runSimulation() {
                          sp.MINZ, sp.MAXZ, sp.h);
         output.setComment(comment);
 
-        for (unsigned int i = 0; i < ppIds.size(); i++)
+        for (long i = 0; i < ppIds.size(); i++)
           if (ppDensity[i] > sp.SPRAY && ppDensity[i] < sp.BUBBLES)
             material.push_back(ppPosit[i]);
 
@@ -688,7 +704,9 @@ void DiffuseCalculator::runSimulation() {
         output.write();
       }
 
+#ifndef _MSVC
 #pragma omp section
+#endif
       if (sp.ply_files) {
         std::vector<std::array<double, 3>> material;
         std::string plyFilename = sp.outputPath + sp.outputPreffix + seqnum +
@@ -699,7 +717,7 @@ void DiffuseCalculator::runSimulation() {
                          sp.MINZ, sp.MAXZ, sp.h);
         output.setComment(comment);
 
-        for (unsigned int i = 0; i < ppIds.size(); i++)
+        for (long i = 0; i < ppIds.size(); i++)
           if (ppDensity[i] > sp.BUBBLES)
             material.push_back(ppPosit[i]);
 
@@ -707,7 +725,9 @@ void DiffuseCalculator::runSimulation() {
         output.write();
       }
 
+#ifndef _MSVC
 #pragma omp section
+#endif
       if (sp.vtk_files) {
         std::string vtkFilename =
             sp.outputPath + sp.outputPreffix + seqnum + ".vtk";
@@ -717,7 +737,9 @@ void DiffuseCalculator::runSimulation() {
         output.write();
       }
 
+#ifndef _MSVC
 #pragma omp section
+#endif
       if (sp.vtk_diffuse_data) {
 
         // Save diffuse particle data
@@ -739,7 +761,7 @@ void DiffuseCalculator::runSimulation() {
             vtkSmartPointer<vtkDoubleArray>::New();
         density->SetName("Density");
 
-        for (unsigned int i = 0; i < ppIds.size(); i++) {
+        for (long i = 0; i < ppIds.size(); i++) {
           ids->InsertNextValue(ppIds[i]);
           int ttype = 1;
           if (ppDensity[i] < sp.SPRAY) {
@@ -759,7 +781,7 @@ void DiffuseCalculator::runSimulation() {
 
         vtkSmartPointer<vtkCellArray> vertices =
             vtkSmartPointer<vtkCellArray>::New();
-        for (unsigned int i = 0; i < dpoints->GetNumberOfPoints(); ++i) {
+        for (long i = 0; i < dpoints->GetNumberOfPoints(); ++i) {
           vtkIdType pt[] = {i};
           vertices->InsertNextCell(1, pt);
         }
@@ -784,7 +806,9 @@ void DiffuseCalculator::runSimulation() {
       /*
        * Write intermediary files
        */
+#ifndef _MSVC
 #pragma omp section
+#endif
       if (sp.vtk_fluid_data) {
 
         vtkSmartPointer<vtkPoints> ppoints = vtkSmartPointer<vtkPoints>::New();
@@ -824,7 +848,7 @@ void DiffuseCalculator::runSimulation() {
 
         vtkSmartPointer<vtkCellArray> vertices =
             vtkSmartPointer<vtkCellArray>::New();
-        for (unsigned int i = 0; i < ppoints->GetNumberOfPoints(); ++i) {
+        for (long i = 0; i < ppoints->GetNumberOfPoints(); ++i) {
           vtkIdType pt[] = {i};
           vertices->InsertNextCell(1, pt);
         }

@@ -31,7 +31,7 @@
    This structure stores all the data of a fluid particle.
  */
 struct particle {
-  unsigned int id;          ///< Particle id
+  long id;          ///< Particle id
   std::array<double,3> pos; ///< Postion
   std::array<double,3> vel; ///< Velocity
   double rhop;              ///< Density

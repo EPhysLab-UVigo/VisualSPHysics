@@ -48,7 +48,7 @@ void PlyWriter::setComment(std::string const& c){
 void PlyWriter::setData(std::vector<std::array<double,3>> *d){
   std::cerr<<" PlyWriter: "<<d->size()<<" input particles"<<std::endl;
 
-  for(unsigned long i=0; i < d->size(); i++){    
+  for(long i=0; i < d->size(); i++){    
     auto p = d->at(i);
     if(p[0] != 0 && p[1] != 0 && p[2] != 0){
       bc.addElement(p, p[0], p[1], p[2]);
@@ -58,10 +58,10 @@ void PlyWriter::setData(std::vector<std::array<double,3>> *d){
   std::cerr<<" Particles non zero: "<< bc.getNElements() << std::endl;
   
   for(auto &bucket : bc.getBuckets()){
-    for(unsigned long i=0; i<bucket.size(); i++){
+    for(long i=0; i<bucket.size(); i++){
       std::array<double,3> newp = bucket[i];
       int psize = 1;
-      for(unsigned long j=0; j<bucket.size(); j++){
+      for(long j=0; j<bucket.size(); j++){
 	if(j!=i && (ops::magnitude(ops::substract(bucket[i],bucket[j])) < (h/5))) {
 	  newp[0] = (newp[0]+bucket[j][0])/2.;
 	  newp[1] = (newp[1]+bucket[j][1])/2.;
@@ -143,7 +143,7 @@ int PlyWriter::write(){
 
     /* 1.- Write the vertices */
 
-    for(unsigned long i=0; i<data.size(); i++){
+    for(long i=0; i<data.size(); i++){
       for(int iv=0; iv<5; iv++){
 	double f = h/(10/std::pow(size[i],1/3));
 	ply_write( oply, loVertices[iv*3] *  f + data[i][0]);
@@ -154,7 +154,7 @@ int PlyWriter::write(){
 
     /* 2.- Write the faces */
 
-    for(unsigned long i=0; i<data.size(); i++){
+    for(long i=0; i<data.size(); i++){
       for(int iv=0; iv<6; iv++){
 	ply_write( oply, 3 );
 	ply_write( oply, loFaces[iv*3] + i*5 );

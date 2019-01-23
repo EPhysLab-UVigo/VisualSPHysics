@@ -39,7 +39,7 @@ VtkDWriter::VtkDWriter(std::string const &name, double xmin, double xmax,
 
 void VtkDWriter::setData(std::vector<std::array<double, 3>> *d,
                          std::vector<std::array<double, 3>> *v) {
-  for (unsigned long i = 0; i < d->size(); i++) {
+  for (long i = 0; i < d->size(); i++) {
     auto p = d->at(i);
     if (p[0] != 0 && p[1] != 0 && p[2] != 0) {
       oparticle tp;
@@ -50,10 +50,10 @@ void VtkDWriter::setData(std::vector<std::array<double, 3>> *d,
   }
 
   for (auto &bucket : bc.getBuckets()) {
-    for (unsigned long i = 0; i < bucket.size(); i++) {
+    for (long i = 0; i < bucket.size(); i++) {
       auto newp = bucket[i];
       int psize = 1;
-      for (unsigned long j = 0; j < bucket.size(); j++) {
+      for (long j = 0; j < bucket.size(); j++) {
         if (j != i && (ops::magnitude(ops::substract(
                            bucket[i].pos, bucket[j].pos)) < (h / 5))) {
           newp.pos[0] = (newp.pos[0] + bucket[j].pos[0]) / 2.;
@@ -83,7 +83,7 @@ int VtkDWriter::write() {
   polydata->SetPoints(points);
 
   vtkSmartPointer<vtkCellArray> vertices = vtkSmartPointer<vtkCellArray>::New();
-  for (unsigned int i = 0; i < points->GetNumberOfPoints(); ++i){
+  for (long i = 0; i < points->GetNumberOfPoints(); ++i){
     vtkIdType pt[] = {i};
     vertices->InsertNextCell(1, pt);
   }

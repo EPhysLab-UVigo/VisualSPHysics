@@ -66,7 +66,7 @@ bool FluidData::loadFile(std::string const &fileName) {
   //   selectEnclosedPoints->Initialize(exclusion);
   // }
 
-  for (unsigned int i = 0; i < output->GetPoints()->GetNumberOfPoints(); i++) {
+  for (long i = 0; i < output->GetPoints()->GetNumberOfPoints(); i++) {
     double *p = points->GetTuple(i), *v = pvel->GetTuple(i);
 
     // if (exclude && selectEnclosedPoints->IsInsideSurface(p)){
@@ -83,8 +83,8 @@ bool FluidData::loadFile(std::string const &fileName) {
 
   // Remove doubles
   for (auto &bucket : bc.getBuckets()) {
-    for (unsigned int i = 0; i < bucket.size(); i++) {
-      for (unsigned int j = 0; j < bucket.size(); j++) {
+    for (long i = 0; i < bucket.size(); i++) {
+      for (long j = 0; j < bucket.size(); j++) {
         if (j != i) {
           if (bucket[i].pos[0] == bucket[j].pos[0] &&
               bucket[i].pos[1] == bucket[j].pos[1] &&
@@ -99,7 +99,7 @@ bool FluidData::loadFile(std::string const &fileName) {
   }
 
   // Assign ids
-  unsigned int idp = 0;
+  long idp = 0;
   for (auto &bucket : bc.getBuckets()) { // Iterate over all buckets
     for (auto &pi : bucket) { // Iterate over each particle in the bucket
       pi.id = idp;

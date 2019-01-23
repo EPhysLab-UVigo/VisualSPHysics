@@ -37,9 +37,9 @@ template <class T>
 class BucketContainer {
 
  private:
-  //unsigned long nPoints;
+  //long nPoints;
   double xmin, xmax, ymin, ymax, zmin, zmax; // Maximum and minimum coordinates in space
-  unsigned int nx,ny,nz; // Number of buckets on each dimension
+  long nx,ny,nz; // Number of buckets on each dimension
   double width; // Size of each bucket
 
   const int nneig = 27;
@@ -72,7 +72,7 @@ class BucketContainer {
 			      {-1,-1,-1}};
   
   std::vector<std::vector<T>> buckets; // Buckets
-  std::vector<std::pair<unsigned int, std::vector<T> &>> nebuckets; // Not empty buckets
+  std::vector<std::pair<long, std::vector<T> &>> nebuckets; // Not empty buckets
 
  public:
   /**
@@ -106,7 +106,7 @@ class BucketContainer {
      \param z Coordinate z.
      \return Bucket index.
    */
-  unsigned int getBucketNumber(double  x, double  y, double  z) const;
+  long getBucketNumber(double  x, double  y, double  z) const;
 
   /**
      Given some spatial coordinates, return the coordinates of the bucket inside the bucket matrix.
@@ -115,21 +115,21 @@ class BucketContainer {
      \param z Coordinate z.
      \return Bucket coordinates.
    */
-  std::array<unsigned int,3> getBucketCoords(double  x, double  y, double  z) const;
+  std::array<long,3> getBucketCoords(double  x, double  y, double  z) const;
 
   /**
      Given the index of a bucket, returns an array with the coordinates of the bucket inside the bucket matrix.
      \param n Bucket index.
      \return Bucket coordinates.
    */
-  std::array<unsigned int,3> getBucketCoords(unsigned int n) const;
+  std::array<long,3> getBucketCoords(long n) const;
 
   /**
      Returns the total number of elements in the structure. 
      Note: this operation loops over the whole structure, so it is relatively slow.
      \return Total number of elements.
    */
-  unsigned int getNElements() const;
+  long getNElements() const;
 
   /**
      \return A reference to the bucket vector that contains all the elements. Including those empty buckets.
@@ -139,28 +139,28 @@ class BucketContainer {
   /**
      \return A reference to a vector of pairs id-bucket. This function only returns those non-empty buckets.
   */
-  std::vector<std::pair<unsigned int, std::vector<T> &>> & getNoEmptyBuckets();
+  std::vector<std::pair<long, std::vector<T> &>> & getNoEmptyBuckets();
 
   /**
      Given a bucket index, return a vector with the elements in that bucket and the 26 surrounding buckets.
      \param nbucket Bucket index.
      \return Element vector.
    */
-  std::vector<T> getSurroundingElements(unsigned int nbucket);
+  std::vector<T> getSurroundingElements(long nbucket);
 
   /**
      Given a bucket index, returns a vector of pointers to the pointed bucket and the 26 surrounding buckets.
      \param nbucket Bucket index.
      \return Vector of pointers to buckets.
    */
-  std::vector<std::vector<T> *> getSurroundingBuckets(unsigned int nbucket);
+  std::vector<std::vector<T> *> getSurroundingBuckets(long nbucket);
 
   /**
      Given the coordinates of a bucket, returns a vector of pointers to the pointed bucket and the 26 surrounding buckets.
      \param bp Array with the coordinates of the bucket.
      \return Vector of pointers to buckets.
    */
-  std::vector<std::vector<T> *> getSurroundingBuckets(std::array<unsigned int,3> bp);
+  std::vector<std::vector<T> *> getSurroundingBuckets(std::array<long,3> bp);
 
   /**
      Given the coordinates of an element, returns a vector of pointers to the pointed bucket and the 26 surrounding buckets.
@@ -211,29 +211,29 @@ bool BucketContainer<T>::addElement(T e, double  x, double  y, double  z){
 }
 
 template <class T>
-unsigned int BucketContainer<T>::getBucketNumber(double  x, double  y, double  z) const{
+long BucketContainer<T>::getBucketNumber(double  x, double  y, double  z) const{
   auto coords = getBucketCoords(x,y,z);
   return coords[0] + nx * coords[1] + nx * ny * coords[2];
 }
 
 template <class T>
-std::array<unsigned int,3> BucketContainer<T>::getBucketCoords(double  x, double  y, double  z) const {
-  return std::array<unsigned int,3>{(unsigned int)((x - xmin)/width), 
-      (unsigned int)((y - ymin)/width), 
-      (unsigned int)((z - zmin)/width)};
+std::array<long,3> BucketContainer<T>::getBucketCoords(double  x, double  y, double  z) const {
+  return std::array<long,3>{(long)((x - xmin)/width), 
+      (long)((y - ymin)/width), 
+      (long)((z - zmin)/width)};
 }
 
 template <class T>
-std::array<unsigned int,3> BucketContainer<T>::getBucketCoords(unsigned int n) const {
-  return std::array<unsigned int,3>{ ((n % (nx*ny)) % nx),
+std::array<long,3> BucketContainer<T>::getBucketCoords(long n) const {
+  return std::array<long,3>{ ((n % (nx*ny)) % nx),
     (n % (nx*ny)) / nx,
     n / (nx*ny)
   };
 }
 
 template <class T>
-unsigned int BucketContainer<T>::getNElements() const {
-  unsigned int ne = 0;
+long BucketContainer<T>::getNElements() const {
+  long ne = 0;
   for(auto &i : buckets)
     ne += i.size();
   return ne;
@@ -245,10 +245,10 @@ std::vector<std::vector<T>> & BucketContainer<T>::getBuckets(){
 }
 
 template <class T>
-std::vector<std::pair<unsigned int, std::vector<T> &>> & BucketContainer<T>::getNoEmptyBuckets(){
+std::vector<std::pair<long, std::vector<T> &>> & BucketContainer<T>::getNoEmptyBuckets(){
   if(nebuckets.size() == 0){ 
     //Compact bucket list
-    for(unsigned int nbucket=0; nbucket < buckets.size(); nbucket++){
+    for(long nbucket=0; nbucket < buckets.size(); nbucket++){
       if(buckets[nbucket].size() > 0){
 	nebuckets.push_back(std::make_pair(nbucket, std::ref(buckets[nbucket])));
       }
@@ -258,7 +258,7 @@ std::vector<std::pair<unsigned int, std::vector<T> &>> & BucketContainer<T>::get
 }
 
 template <class T>
-std::vector<T> BucketContainer<T>::getSurroundingElements(unsigned int nbucket){
+std::vector<T> BucketContainer<T>::getSurroundingElements(long nbucket){
   auto buckets = getSurroundingBuckets(nbucket);
   std::vector<T> ret;
   for(auto bucket : buckets){
@@ -270,16 +270,16 @@ std::vector<T> BucketContainer<T>::getSurroundingElements(unsigned int nbucket){
 }
 
 template <class T>
-std::vector<std::vector<T> *> BucketContainer<T>::getSurroundingBuckets(unsigned int nbucket){
+std::vector<std::vector<T> *> BucketContainer<T>::getSurroundingBuckets(long nbucket){
   return getSurroundingBuckets(getBucketCoords(nbucket));
 }
 
 template <class T>
-std::vector<std::vector<T> *> BucketContainer<T>::getSurroundingBuckets(std::array<unsigned int,3> bp){
+std::vector<std::vector<T> *> BucketContainer<T>::getSurroundingBuckets(std::array<long,3> bp){
   std::vector<std::vector<T> *> retvec;
   
-  for(unsigned int i=0; i<nneig; i++){
-    unsigned int vx = bp[0] + addvals[i][0], 
+  for(long i=0; i<nneig; i++){
+    long vx = bp[0] + addvals[i][0], 
       vy = bp[1] + addvals[i][1], 
       vz = bp[2] + addvals[i][2];
     if(vx>=0 && vx<nx &&

@@ -81,7 +81,7 @@ extern "C"
       *velocity = PyList_New(output->GetPoints()->GetNumberOfPoints()*5),
       *faces = PyList_New(output->GetPoints()->GetNumberOfPoints()*6);
     
-    for(unsigned int i=0; i < output->GetPoints()->GetNumberOfPoints(); i++){
+    for(long i=0; i < output->GetPoints()->GetNumberOfPoints(); i++){
       double *p = points->GetTuple(i),
 	*v = pvel->GetTuple(i),
 	s = size->GetTuple(i)[0];
@@ -144,7 +144,7 @@ extern "C"
 
     std::cerr<<"DEBUG: data read ok";
 
-    for(unsigned long i=0; i < output->GetPoints()->GetNumberOfPoints(); i++){
+    for(long i=0; i < output->GetPoints()->GetNumberOfPoints(); i++){
       double *p = points->GetTuple(i),
 	*v = pvel->GetTuple(i);
       PyList_SET_ITEM(vertices, i, Py_BuildValue("(ddd)",p[0],p[1],p[2]));
@@ -159,7 +159,7 @@ extern "C"
     vtkCellArray * polys = output->GetPolys();
     vtkIdType *indices; // This should be vtkSmartPointer or just regular pointer?
     vtkIdType numberOfPoints;
-    unsigned int polyCount = 0;
+    long polyCount = 0;
 
     PyObject *faces = PyList_New(polys->GetNumberOfCells());
 
@@ -203,7 +203,7 @@ extern "C"
 
     PyObject *vertices = PyList_New(output->GetPoints()->GetNumberOfPoints());
 
-    for(unsigned long i=0; i < output->GetPoints()->GetNumberOfPoints(); i++){
+    for(long i=0; i < output->GetPoints()->GetNumberOfPoints(); i++){
       double *p = points->GetTuple(i);
       PyList_SET_ITEM(vertices, i, Py_BuildValue("(ddd)",p[0],p[1],p[2]));
     }
@@ -221,7 +221,7 @@ extern "C"
       int lnids = clids->GetNumberOfIds();
       PyObject * tline = PyList_New(lnids);
 
-      for(unsigned int i=0; i < lnids; i++){
+      for(long i=0; i < lnids; i++){
 	PyList_SET_ITEM(tline, i, Py_BuildValue("i",clids->GetId(i)));
       }
       
@@ -260,7 +260,7 @@ extern "C"
 
     PyObject *vertices = PyList_New(output->GetPoints()->GetNumberOfPoints());
 
-    for(unsigned long i=0; i < output->GetPoints()->GetNumberOfPoints(); i++){
+    for(long i=0; i < output->GetPoints()->GetNumberOfPoints(); i++){
       double *p = points->GetTuple(i);
       PyList_SET_ITEM(vertices, i, Py_BuildValue("(ddd)",p[0],p[1],p[2]));
     }
@@ -268,7 +268,7 @@ extern "C"
     vtkCellArray * polys = output->GetPolys();
     vtkIdType *indices;
     vtkIdType numberOfPoints;
-    unsigned int polyCount = 0;
+    long polyCount = 0;
 
     PyObject *faces = PyList_New(polys->GetNumberOfCells());
     
