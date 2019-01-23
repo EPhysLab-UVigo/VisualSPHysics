@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 find_package(PythonLibs 3 REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
-find_package(VTK REQUIRED)
+find_package(VTK COMPONENTS vtkFiltersModeling vtkIOGeometry)
 include(${VTK_USE_FILE})
 
 set(SRCS FluidData.cpp PlyWriter.cpp VtkDWriter.cpp Ops.cpp DiffuseCalculator.cpp rply/rply.c diffuseparticlesmodule.cpp)

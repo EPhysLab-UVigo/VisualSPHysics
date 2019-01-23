@@ -1,0 +1,5 @@
+build/
+foamsimulator/build/
+vtkimporter/build/
+\#*
+settings.json
