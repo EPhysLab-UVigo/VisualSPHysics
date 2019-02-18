@@ -8,13 +8,13 @@ include(${VTK_USE_FILE})
 
 set(SRCS FluidData.cpp PlyWriter.cpp VtkDWriter.cpp Ops.cpp DiffuseCalculator.cpp rply/rply.c diffuseparticlesmodule.cpp)
  
-#add_executable(diffuse_parts ${SRCS})
-
 add_library(diffuseparticles SHARED ${SRCS})
 
 add_subdirectory( rply )
 
-#set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS ON)
 
 find_package(OpenMP)
 if (OPENMP_FOUND)
@@ -23,12 +23,12 @@ if (OPENMP_FOUND)
 endif()
 
 if (NOT WIN32) 
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -ffast-math -std=c++11 -I${PYTHON_INCLUDE_DIRS}")
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -fopenmp-simd -I${PYTHON_INCLUDE_DIRS}")
 endif ()
  
 if(VTK_LIBRARIES)
-  target_link_libraries(diffuseparticles ${VTK_LIBRARIES} ${PYTHON_LIBRARIES})
+  target_link_libraries(diffuseparticles ${VTK_LIBRARIES} ${PYTHON_LIBRARIES} stdc++fs)
 else()
-  target_link_libraries(diffuseparticles vtkHybrid ${PYTHON_LIBRARIES})
+  target_link_libraries(diffuseparticles vtkHybrid ${PYTHON_LIBRARIES} stdc++fs)
 endif()
 
