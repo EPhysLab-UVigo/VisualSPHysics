@@ -19,9 +19,77 @@
 #include <vtkDataArray.h>
 #include <vtkPointData.h>
 #include <vtkPolyDataReader.h>
+#include <vtkCommand.h>
 //#include <vtkSelectEnclosedPoints.h>
 
 #include <array>
+
+// ErrorObserver class copied from: https://vtk.org/Wiki/VTK/Examples/Cxx/Utilities/ObserveError
+class ErrorObserver : public vtkCommand
+{
+public:
+  ErrorObserver():
+    Error(false),
+    Warning(false),
+    ErrorMessage(""),
+    WarningMessage("") {}
+
+  static ErrorObserver *New()
+  {
+    return new ErrorObserver;
+  }
+
+  bool GetError() const
+  {
+    return this->Error;
+  }
+
+  bool GetWarning() const
+  {
+    return this->Warning;
+  }
+
+  void Clear()
+  {
+    this->Error = false;
+    this->Warning = false;
+    this->ErrorMessage = "";
+    this->WarningMessage = "";
+  }
+
+  virtual void Execute(vtkObject *vtkNotUsed(caller),
+                       unsigned long event,
+                       void *calldata)
+  {
+  switch(event)
+    {
+    case vtkCommand::ErrorEvent:
+      ErrorMessage = static_cast<char *>(calldata);
+      this->Error = true;
+      break;
+    case vtkCommand::WarningEvent:
+      WarningMessage = static_cast<char *>(calldata);
+      this->Warning = true;
+      break;
+    }
+  }
+
+  std::string GetErrorMessage()
+  {
+    return ErrorMessage;
+  }
+
+  std::string GetWarningMessage()
+  {
+    return WarningMessage;
+  }
+
+private:
+  bool        Error;
+  bool        Warning;
+  std::string ErrorMessage;
+  std::string WarningMessage;
+};
 
 FluidData::FluidData(double xmin, double xmax, double ymin, double ymax,
                      double zmin, double zmax, double h)
@@ -38,11 +106,20 @@ void FluidData::setExclusionZone(std::string const &fileName) {
 }
 
 bool FluidData::loadFile(std::string const &fileName) {
+  vtkSmartPointer<ErrorObserver> errorObserver =
+      vtkSmartPointer<ErrorObserver>::New();
   vtkSmartPointer<vtkPolyDataReader> reader =
       vtkSmartPointer<vtkPolyDataReader>::New();
-  reader->SetFileName(fileName.c_str());
-  reader->Update();
 
+  reader->SetFileName(fileName.c_str());
+  reader->AddObserver(vtkCommand::ErrorEvent, errorObserver);
+  reader->Update();
+  
+  if (errorObserver->GetError()){
+    std::cerr << "ERROR: the file cannot be loaded." << std::endl;
+    return false;
+  }
+  
   vtkPolyData *output = reader->GetOutput();
 
   vtkDataArray *points = output->GetPoints()->GetData();

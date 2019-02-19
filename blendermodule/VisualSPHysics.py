@@ -154,30 +154,31 @@ def parseXML(context):
     fpath = bpy.path.abspath(context.scene.DsphFoamXML)
     
     if os.path.isfile(fpath) :
-        xdoc = xml.dom.minidom.parse(fpath)
-        
-        bpy.context.scene.DsphFoamH = float(xdoc.getElementsByTagName("h")[0].getAttribute("value"))
-        context.scene.DsphFoamMass = float(xdoc.getElementsByTagName("massfluid")[0].getAttribute("value"))
-        
-        for param in xdoc.getElementsByTagName("parameter") :
-            if param.getAttribute("key") == "TimeOut" :
-                context.scene.DsphFoamTimeStep = float(param.getAttribute("value"))
-                
-        if not context.scene.DsphFoamCustomDomain:
-            #Get domain from xml file
-            pmin = xdoc.getElementsByTagName("pointmin")[0]
-            context.scene.DsphFoamMinX = float(pmin.getAttribute("x"))
-            context.scene.DsphFoamMinY = float(pmin.getAttribute("y"))
-            context.scene.DsphFoamMinZ = float(pmin.getAttribute("z"))
-            pmax = xdoc.getElementsByTagName("pointmax")[0]
-            context.scene.DsphFoamMaxX = float(pmax.getAttribute("x"))
-            context.scene.DsphFoamMaxY = float(pmax.getAttribute("y"))
-            context.scene.DsphFoamMaxZ = float(pmax.getAttribute("z"))
+        try:
+            xdoc = xml.dom.minidom.parse(fpath)
             
-        return True
+            bpy.context.scene.DsphFoamH = float(xdoc.getElementsByTagName("h")[0].getAttribute("value"))
+            context.scene.DsphFoamMass = float(xdoc.getElementsByTagName("massfluid")[0].getAttribute("value"))
             
+            for param in xdoc.getElementsByTagName("parameter") :
+                if param.getAttribute("key") == "TimeOut" :
+                    context.scene.DsphFoamTimeStep = float(param.getAttribute("value"))
+                    
+            if not context.scene.DsphFoamCustomDomain:
+                #Get domain from xml file
+                pmin = xdoc.getElementsByTagName("pointmin")[0]
+                context.scene.DsphFoamMinX = float(pmin.getAttribute("x"))
+                context.scene.DsphFoamMinY = float(pmin.getAttribute("y"))
+                context.scene.DsphFoamMinZ = float(pmin.getAttribute("z"))
+                pmax = xdoc.getElementsByTagName("pointmax")[0]
+                context.scene.DsphFoamMaxX = float(pmax.getAttribute("x"))
+                context.scene.DsphFoamMaxY = float(pmax.getAttribute("y"))
+                context.scene.DsphFoamMaxZ = float(pmax.getAttribute("z"))            
+            return True            
+        except:
+            return False
+                        
     else:
-        print("False!!")
         return False
 
     
@@ -186,6 +187,12 @@ def parseXML(context):
 #
  
 from bpy.props import *
+
+def showPopup(text = "", title = "Info", icon = 'INFO'):
+    def draw(self, context):
+        self.layout.label(text)
+    bpy.context.window_manager.popup_menu(draw, title = title, icon = icon)
+
 
 def updateObjectProperty(self, context):    
     if self['DsphObjType'] == 0 :
@@ -433,60 +440,66 @@ class OBJECT_OT_RunFoamSimulation(bpy.types.Operator):
      
     def execute(self, context):
         if parseXML(context):
-            print("File parsed!")
-            diffuseparticles.run(
-                bpy.path.abspath(context.scene.DsphFoamInputPath),  # Input path
-                context.scene.DsphFoamInputPrefix,                  # Input files prefix
-                bpy.path.abspath(context.scene.DsphFoamPath),       # Output path
-                context.scene.DsphFoamPrefix,                       # Output files prefix
-                "",                                                 # Exclusion zone file
-                context.scene.DsphFoamStart,                        # Starting timestep
-                context.scene.DsphFoamEnd,                          # Ending timestep
-                4,                                                  # Zero padding
-                False,                                              # Output text files
-                False,                                              # Output ply files
-                True,                                               # Output vtk files
-                False,                                              # Output vtk extra info files
-                False,                                              # Output vtk fluid info files
-                context.scene.DsphFoamH,                            # H value
-                context.scene.DsphFoamMass,                         # Fluid particle mass value
-                context.scene.DsphFoamTimeStep,                     # Timestep duration
-                context.scene.DsphFoamMinX,                         # Domain limits
-                context.scene.DsphFoamMinY,
-                context.scene.DsphFoamMinZ,
-                context.scene.DsphFoamMaxX,
-                context.scene.DsphFoamMaxY,
-                context.scene.DsphFoamMaxZ,
-                context.scene.DsphFoamMinTrappedAir,
-                context.scene.DsphFoamMaxTrappedAir,
-                context.scene.DsphFoamMinWaveCrests,
-                context.scene.DsphFoamMaxWaveCrests,
-                context.scene.DsphFoamMinKinetic,
-                context.scene.DsphFoamMaxKinetic,
-                context.scene.DsphFoamTAMult,
-                context.scene.DsphFoamWCMult,
-                context.scene.DsphFoamSprayDensity,
-                context.scene.DsphFoamBubblesDensity,
-                context.scene.DsphFoamLifetime,
-                context.scene.DsphFoamBuoyancy,
-                context.scene.DsphFoamDrag)
-                
-        fileName = context.scene.DsphFoamPrefix + str(context.scene.DsphFoamStart).zfill(4) + ".vtk"
+            try:
+                diffuseparticles.run(
+                    bpy.path.abspath(context.scene.DsphFoamInputPath),  # Input path
+                    context.scene.DsphFoamInputPrefix,                  # Input files prefix
+                    bpy.path.abspath(context.scene.DsphFoamPath),       # Output path
+                    context.scene.DsphFoamPrefix,                       # Output files prefix
+                    "",                                                 # Exclusion zone file
+                    context.scene.DsphFoamStart,                        # Starting timestep
+                    context.scene.DsphFoamEnd,                          # Ending timestep
+                    4,                                                  # Zero padding
+                    False,                                              # Output text files
+                    False,                                              # Output ply files
+                    True,                                               # Output vtk files
+                    False,                                              # Output vtk extra info files
+                    False,                                              # Output vtk fluid info files
+                    context.scene.DsphFoamH,                            # H value
+                    context.scene.DsphFoamMass,                         # Fluid particle mass value
+                    context.scene.DsphFoamTimeStep,                     # Timestep duration
+                    context.scene.DsphFoamMinX,                         # Domain limits
+                    context.scene.DsphFoamMinY,
+                    context.scene.DsphFoamMinZ,
+                    context.scene.DsphFoamMaxX,
+                    context.scene.DsphFoamMaxY,
+                    context.scene.DsphFoamMaxZ,
+                    context.scene.DsphFoamMinTrappedAir,
+                    context.scene.DsphFoamMaxTrappedAir,
+                    context.scene.DsphFoamMinWaveCrests,
+                    context.scene.DsphFoamMaxWaveCrests,
+                    context.scene.DsphFoamMinKinetic,
+                    context.scene.DsphFoamMaxKinetic,
+                    context.scene.DsphFoamTAMult,
+                    context.scene.DsphFoamWCMult,
+                    context.scene.DsphFoamSprayDensity,
+                    context.scene.DsphFoamBubblesDensity,
+                    context.scene.DsphFoamLifetime,
+                    context.scene.DsphFoamBuoyancy,
+                    context.scene.DsphFoamDrag)
+                    
+                fileName = context.scene.DsphFoamPrefix + str(context.scene.DsphFoamStart).zfill(4) + ".vtk"
 
-        createObject (context.scene.DsphFoamPrefix + "_FOAM",
-            fileName,
-            context.scene.DsphFoamPath,
-            context.scene.DsphFoamPrefix,
-            ".vtk",
-            "FOAM",
-            True,
-            False,
-            False,
-            True,
-            context.scene.DsphFoamStart,
-            context.scene.DsphFoamEnd)                
-                
-        return{'FINISHED'}  
+                createObject (context.scene.DsphFoamPrefix + "_FOAM",
+                    fileName,
+                    context.scene.DsphFoamPath,
+                    context.scene.DsphFoamPrefix,
+                    ".vtk",
+                    "FOAM",
+                    True,
+                    False,
+                    False,
+                    True,
+                    context.scene.DsphFoamStart,
+                    context.scene.DsphFoamEnd)                
+                        
+                return{'FINISHED'}  
+            except:
+                showPopup("Something went wrong with the simulation. Take a look to the system console to get more information.", "Error", "ERROR")
+                return{'CANCELLED'}
+        else:
+            showPopup("Error: the XML cannot be loaded. Make sure to choose the XML file generated by the gencase tool.", "Error", "ERROR")
+            return{'CANCELLED'}
 
 
 # TODO: scene properties to register/unregister functions 
@@ -643,7 +656,7 @@ class FoamSimulationPanel(bpy.types.Panel):
         layout.prop(context.scene, "DsphFoamPrefix")
         
         row = layout.row()
-        row.alert = not os.path.isfile(bpy.path.abspath(context.scene.DsphFoamXML))
+        row.alert = (not os.path.isfile(bpy.path.abspath(context.scene.DsphFoamXML)))
         ds = ds or row.alert
         row.prop(context.scene, "DsphFoamXML")   
         

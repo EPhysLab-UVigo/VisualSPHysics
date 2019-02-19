@@ -190,7 +190,9 @@ void DiffuseCalculator::runSimulation() {
 
     if (std::string(sp.exclusionZoneFile) != "")
       file.setExclusionZone(sp.exclusionZoneFile);
-    file.loadFile(fileName);
+
+    if (!file.loadFile(fileName)) // Cannot open the file, finish the simulation!!
+      break;
 
     BucketContainer<particle> &f = *(file.getBucketContainer());
 

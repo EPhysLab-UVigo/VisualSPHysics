@@ -36,17 +36,17 @@ extern "C"
 {
 
   std::array<double, 15> loVertices = {-1.299038, -0.750000, 0.009955,
-				       0.000000, 0.000000, -1.492738,
-				       1.299038, -0.750000, 0.009955,
-				       0.000000, 1.500000, 0.009955,
-				       0.000000, 0.000000, 1.512648};
+				                               0.000000, 0.000000, -1.492738,
+				                               1.299038, -0.750000, 0.009955,
+				                               0.000000, 1.500000, 0.009955,
+				                               0.000000, 0.000000, 1.512648};
   
   std::array<int, 18> loFaces = {0, 1, 2,
-				 3, 1, 0,
-				 2, 1, 3,
-				 3, 4, 2,
-				 2, 4, 0,
-				 0, 4, 3};
+				                         3, 1, 0,
+				                         2, 1, 3,
+				                         3, 4, 2,
+				                         2, 4, 0,
+				                         0, 4, 3};
   
   /** 
      Load a file corresponding to diffuse particles data. Diffuse particles are fixed points in the space,
@@ -83,27 +83,27 @@ extern "C"
     
     for(long i=0; i < output->GetPoints()->GetNumberOfPoints(); i++){
       double *p = points->GetTuple(i),
-	*v = pvel->GetTuple(i),
-	s = size->GetTuple(i)[0];
+	      *v = pvel->GetTuple(i),
+	      s = size->GetTuple(i)[0];
 
       /* 1.- Write the vertices */
       for(int iv=0; iv<5; iv++){
-	double px = loVertices[iv*3] *  s + p[0],
-	  py = loVertices[iv*3+1] * s + p[1],
-	  pz = loVertices[iv*3+2] * s + p[2];
-	
-	PyList_SET_ITEM(vertices, i*5+iv, Py_BuildValue("(ddd)", px, py, pz));
-	PyList_SET_ITEM(velocity, i*5+iv, Py_BuildValue("(ddd)",px+step*v[0],
-							py+step*v[1],
-							pz+step*v[2]));
+	      double px = loVertices[iv*3] *  s + p[0],
+	      py = loVertices[iv*3+1] * s + p[1],
+	      pz = loVertices[iv*3+2] * s + p[2];
+
+	      PyList_SET_ITEM(vertices, i*5+iv, Py_BuildValue("(ddd)", px, py, pz));
+	      PyList_SET_ITEM(velocity, i*5+iv, Py_BuildValue("(ddd)", px + step * v[0],
+				          			py + step * v[1],
+				          			pz + step * v[2]));
       }
       
       /* 2.- Write the faces */
       for(int iv=0; iv<6; iv++){
-	PyList_SET_ITEM(faces, i*6+iv, Py_BuildValue("(iii)",
-						     loFaces[iv*3] + i*5,
-						     loFaces[iv*3+1] + i*5,
-						     loFaces[iv*3+2] + i*5));
+	      PyList_SET_ITEM(faces, i * 6 + iv, Py_BuildValue("(iii)",
+                        loFaces[iv *3 ] + i * 5,
+                        loFaces[iv *3 + 1] + i * 5,
+                        loFaces[iv *3 + 2] + i * 5));
       }
     }
 
@@ -123,7 +123,7 @@ extern "C"
      \return Pointer to a Python object that contains a tuple with the list of vertices, list of polygons and velocity vectors.
    */
   static PyObject * vtkimporter_loadvel(PyObject *self, PyObject *args){
-    std::cerr<<"DEBUG: Version 1.3\n";
+    std::cerr<<"DEBUG: Version 1.4\n";
     const char * FILE_NAME;
 
     double step = 0.1;
@@ -146,7 +146,7 @@ extern "C"
 
     for(long i=0; i < output->GetPoints()->GetNumberOfPoints(); i++){
       double *p = points->GetTuple(i),
-	*v = pvel->GetTuple(i);
+	      *v = pvel->GetTuple(i);
       PyList_SET_ITEM(vertices, i, Py_BuildValue("(ddd)",p[0],p[1],p[2]));
 
       PyList_SET_ITEM(velocity, i, Py_BuildValue("(ddd)",p[0]+step*v[0],
@@ -165,9 +165,9 @@ extern "C"
 
     for (polys->InitTraversal(); polys->GetNextCell(numberOfPoints, indices); polyCount++) {
       if(numberOfPoints==3){
-	PyList_SET_ITEM(faces, polyCount, Py_BuildValue("(iii)",indices[0],indices[1],indices[2]));
+	      PyList_SET_ITEM(faces, polyCount, Py_BuildValue("(iii)",indices[0],indices[1],indices[2]));
       }else{ /* Should be 4 ;-) */
-	PyList_SET_ITEM(faces, polyCount, Py_BuildValue("(iiii)",indices[0],indices[1],indices[2],indices[3]));
+	      PyList_SET_ITEM(faces, polyCount, Py_BuildValue("(iiii)",indices[0],indices[1],indices[2],indices[3]));
       }
     }
 
@@ -222,7 +222,7 @@ extern "C"
       PyObject * tline = PyList_New(lnids);
 
       for(long i=0; i < lnids; i++){
-	PyList_SET_ITEM(tline, i, Py_BuildValue("i",clids->GetId(i)));
+	      PyList_SET_ITEM(tline, i, Py_BuildValue("i",clids->GetId(i)));
       }
       
       PyList_SET_ITEM(vlines, nl, tline);
@@ -274,9 +274,9 @@ extern "C"
     
     for (polys->InitTraversal(); polys->GetNextCell(numberOfPoints, indices); polyCount++) {
       if(numberOfPoints==3){
-	PyList_SET_ITEM(faces, polyCount, Py_BuildValue("(iii)",indices[0],indices[1],indices[2]));
+	      PyList_SET_ITEM(faces, polyCount, Py_BuildValue("(iii)",indices[0],indices[1],indices[2]));
       }else{ /* Should be 4 ;-) */
-	PyList_SET_ITEM(faces, polyCount, Py_BuildValue("(iiii)",indices[0],indices[1],indices[2],indices[3]));
+	      PyList_SET_ITEM(faces, polyCount, Py_BuildValue("(iiii)",indices[0],indices[1],indices[2],indices[3]));
       }
     }
 
