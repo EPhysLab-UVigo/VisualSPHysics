@@ -23,7 +23,8 @@ bl_info = {
 }
 
 import bpy, sys, math, re, os, time, array, ctypes, bmesh, mathutils
-import xml.dom.minidom
+import xml.etree.ElementTree as ET
+
  
 import vtkimporter 
 import diffuseparticles
@@ -155,25 +156,23 @@ def parseXML(context):
     
     if os.path.isfile(fpath) :
         try:
-            xdoc = xml.dom.minidom.parse(fpath)
+            tree = ET.parse(fpath)
+            root = tree.getroot()
             
-            bpy.context.scene.DsphFoamH = float(xdoc.getElementsByTagName("h")[0].getAttribute("value"))
-            context.scene.DsphFoamMass = float(xdoc.getElementsByTagName("massfluid")[0].getAttribute("value"))
-            
-            for param in xdoc.getElementsByTagName("parameter") :
-                if param.getAttribute("key") == "TimeOut" :
-                    context.scene.DsphFoamTimeStep = float(param.getAttribute("value"))
+            bpy.context.scene.DsphFoamH = float(root.find("./execution/constants/h").get("value"))
+            context.scene.DsphFoamMass = float(root.find("./execution/constants/massfluid").get("value"))
+            context.scene.DsphFoamTimeStep = float(root.find("./execution/parameters/parameter[@key='TimeOut']").get("value"))
                     
             if not context.scene.DsphFoamCustomDomain:
                 #Get domain from xml file
-                pmin = xdoc.getElementsByTagName("pointmin")[0]
-                context.scene.DsphFoamMinX = float(pmin.getAttribute("x"))
-                context.scene.DsphFoamMinY = float(pmin.getAttribute("y"))
-                context.scene.DsphFoamMinZ = float(pmin.getAttribute("z"))
-                pmax = xdoc.getElementsByTagName("pointmax")[0]
-                context.scene.DsphFoamMaxX = float(pmax.getAttribute("x"))
-                context.scene.DsphFoamMaxY = float(pmax.getAttribute("y"))
-                context.scene.DsphFoamMaxZ = float(pmax.getAttribute("z"))            
+                pmin = root.find("./casedef/geometry/definition/pointmin")
+                context.scene.DsphFoamMinX = float(pmin.get("x"))
+                context.scene.DsphFoamMinY = float(pmin.get("y"))
+                context.scene.DsphFoamMinZ = float(pmin.get("z"))
+                pmax = root.find("./casedef/geometry/definition/pointmax")
+                context.scene.DsphFoamMaxX = float(pmax.get("x"))
+                context.scene.DsphFoamMaxY = float(pmax.get("y"))
+                context.scene.DsphFoamMaxZ = float(pmax.get("z"))
             return True            
         except:
             return False
