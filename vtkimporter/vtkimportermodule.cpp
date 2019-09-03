@@ -1,5 +1,5 @@
 // VisualSPHysics
-// Copyright (C) 2018 Orlando Garcia-Feal orlando@uvigo.es
+// Copyright (C) 2019 Orlando Garcia-Feal orlando@uvigo.es
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -89,8 +89,8 @@ extern "C"
       /* 1.- Write the vertices */
       for(int iv=0; iv<5; iv++){
 	      double px = loVertices[iv*3] *  s + p[0],
-	      py = loVertices[iv*3+1] * s + p[1],
-	      pz = loVertices[iv*3+2] * s + p[2];
+	      py = loVertices[iv * 3 + 1] * s + p[1],
+	      pz = loVertices[iv * 3 + 2] * s + p[2];
 
 	      PyList_SET_ITEM(vertices, i*5+iv, Py_BuildValue("(ddd)", px, py, pz));
 	      PyList_SET_ITEM(velocity, i*5+iv, Py_BuildValue("(ddd)", px + step * v[0],
@@ -101,9 +101,9 @@ extern "C"
       /* 2.- Write the faces */
       for(int iv=0; iv<6; iv++){
 	      PyList_SET_ITEM(faces, i * 6 + iv, Py_BuildValue("(iii)",
-                        loFaces[iv *3 ] + i * 5,
-                        loFaces[iv *3 + 1] + i * 5,
-                        loFaces[iv *3 + 2] + i * 5));
+                        loFaces[iv * 3 ] + i * 5,
+                        loFaces[iv * 3 + 1] + i * 5,
+                        loFaces[iv * 3 + 2] + i * 5));
       }
     }
 
@@ -123,7 +123,7 @@ extern "C"
      \return Pointer to a Python object that contains a tuple with the list of vertices, list of polygons and velocity vectors.
    */
   static PyObject * vtkimporter_loadvel(PyObject *self, PyObject *args){
-    std::cerr<<"DEBUG: Version 1.4\n";
+    std::cerr<<"DEBUG: VtkImporter v1.5\n";
     const char * FILE_NAME;
 
     double step = 0.1;
@@ -147,11 +147,12 @@ extern "C"
     for(long i=0; i < output->GetPoints()->GetNumberOfPoints(); i++){
       double *p = points->GetTuple(i),
 	      *v = pvel->GetTuple(i);
-      PyList_SET_ITEM(vertices, i, Py_BuildValue("(ddd)",p[0],p[1],p[2]));
+      PyList_SET_ITEM(vertices, i, Py_BuildValue("(ddd)", p[0], p[1], p[2]));
 
-      PyList_SET_ITEM(velocity, i, Py_BuildValue("(ddd)",p[0]+step*v[0],
-       						 p[1]+step*v[1],
-       						 p[2]+step*v[2]));
+      PyList_SET_ITEM(velocity, i, Py_BuildValue("(ddd)",
+                                                 p[0] + step * v[0],
+       						                               p[1] + step * v[1],
+       						                               p[2] + step * v[2]));
     }
 
     std::cerr<<"DEBUG: vertex read ok";
@@ -164,7 +165,7 @@ extern "C"
     PyObject *faces = PyList_New(polys->GetNumberOfCells());
 
     for (polys->InitTraversal(); polys->GetNextCell(numberOfPoints, indices); polyCount++) {
-      if(numberOfPoints==3){
+      if(numberOfPoints == 3){
 	      PyList_SET_ITEM(faces, polyCount, Py_BuildValue("(iii)",indices[0],indices[1],indices[2]));
       }else{ /* Should be 4 ;-) */
 	      PyList_SET_ITEM(faces, polyCount, Py_BuildValue("(iiii)",indices[0],indices[1],indices[2],indices[3]));
@@ -244,7 +245,7 @@ extern "C"
      \return Pointer to a Python object that contains a tuple with the list of vertices and list of polygons.
    */
   static PyObject * vtkimporter_load(PyObject *self, PyObject *args){
-    std::cerr<<"DEBUG: Version 1.3\n";
+    std::cerr<<"DEBUG: VtkImporter v1.5\n";
     
     const char * FILE_NAME;
 
@@ -273,7 +274,7 @@ extern "C"
     PyObject *faces = PyList_New(polys->GetNumberOfCells());
     
     for (polys->InitTraversal(); polys->GetNextCell(numberOfPoints, indices); polyCount++) {
-      if(numberOfPoints==3){
+      if(numberOfPoints == 3){
 	      PyList_SET_ITEM(faces, polyCount, Py_BuildValue("(iii)",indices[0],indices[1],indices[2]));
       }else{ /* Should be 4 ;-) */
 	      PyList_SET_ITEM(faces, polyCount, Py_BuildValue("(iiii)",indices[0],indices[1],indices[2],indices[3]));

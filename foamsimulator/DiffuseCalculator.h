@@ -1,5 +1,5 @@
 // VisualSPHysics
-// Copyright (C) 2018 Orlando Garcia-Feal orlando@uvigo.es
+// Copyright (C) 2019 Orlando Garcia-Feal orlando@uvigo.es
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

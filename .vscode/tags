@@ -1,0 +1,119 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	0.0.0	/3fdf28bc/
+BubblesDensity	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    BubblesDensity = fp.getfloat('BubblesDensity')$/;"	kind:variable	line:86
+BuoyancyControl	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    BuoyancyControl = fp.getfloat('BuoyancyControl')$/;"	kind:variable	line:88
+CustomDomain	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    CustomDomain = do.getboolean('CustomDomain')$/;"	kind:variable	line:94
+DiffuseTrappedAirMultiplier	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    DiffuseTrappedAirMultiplier = fp.getfloat('DiffuseTrappedAirMultiplier')$/;"	kind:variable	line:83
+DiffuseWaveCrestsMultiplier	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    DiffuseWaveCrestsMultiplier = fp.getfloat('DiffuseWaveCrestsMultiplier')$/;"	kind:variable	line:84
+DomainMaxx	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^        DomainMaxx = do.getfloat('DomainMaxx')$/;"	kind:variable	line:100
+DomainMaxx	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    DomainMaxx = float(pmax.getAttribute("x"))$/;"	kind:variable	line:137
+DomainMaxy	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^        DomainMaxy = do.getfloat('DomainMaxy')$/;"	kind:variable	line:101
+DomainMaxy	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    DomainMaxy = float(pmax.getAttribute("y"))$/;"	kind:variable	line:138
+DomainMaxz	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^        DomainMaxz = do.getfloat('DomainMaxz')$/;"	kind:variable	line:102
+DomainMaxz	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    DomainMaxz = float(pmax.getAttribute("z"))$/;"	kind:variable	line:139
+DomainMinx	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^        DomainMinx = do.getfloat('DomainMinx')$/;"	kind:variable	line:97
+DomainMinx	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    DomainMinx = float(pmin.getAttribute("x"))$/;"	kind:variable	line:133
+DomainMiny	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^        DomainMiny = do.getfloat('DomainMiny')$/;"	kind:variable	line:98
+DomainMiny	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    DomainMiny = float(pmin.getAttribute("y"))$/;"	kind:variable	line:134
+DomainMinz	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^        DomainMinz = do.getfloat('DomainMinz')$/;"	kind:variable	line:99
+DomainMinz	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    DomainMinz = float(pmin.getAttribute("z"))$/;"	kind:variable	line:135
+DragControl	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    DragControl = fp.getfloat('DragControl')$/;"	kind:variable	line:89
+DsphHandler	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^def DsphHandler (scene):$/;"	kind:function	line:740
+ET	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^import xml.etree.ElementTree as ET$/;"	kind:namespace	line:27
+EndingTimeStep	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    EndingTimeStep = ts.getint('EndingTimeStep')$/;"	kind:variable	line:72
+ExclusionZoneFile	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    ExclusionZoneFile = paths['ExclusionZoneFile']$/;"	kind:variable	line:56
+FILE_BROWSER_OT_BrowseFileOperator	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^class FILE_BROWSER_OT_BrowseFileOperator(bpy.types.Operator):$/;"	kind:class	line:330
+FilesOutputPrefix	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    FilesOutputPrefix = paths['FilesOutputPrefix']$/;"	kind:variable	line:55
+InputDataPath	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    InputDataPath = paths['InputDataPath']$/;"	kind:variable	line:51
+InputFilesPrefix	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    InputFilesPrefix = paths['InputFilesPrefix']$/;"	kind:variable	line:52
+LifefimeMultiplier	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    LifefimeMultiplier = fp.getfloat('LifefimeMultiplier')$/;"	kind:variable	line:87
+MESH_OT_dsph_object_add	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^class MESH_OT_dsph_object_add(bpy.types.Operator):$/;"	kind:class	line:428
+MaxKineticEnergyThreshold	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    MaxKineticEnergyThreshold = fp.getfloat('MaxKineticEnergyThreshold')$/;"	kind:variable	line:82
+MaxTrappedAirThreshold	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    MaxTrappedAirThreshold = fp.getfloat('MaxTrappedAirThreshold')$/;"	kind:variable	line:78
+MaxWaveCrestsThreshold	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    MaxWaveCrestsThreshold = fp.getfloat('MaxWaveCrestsThreshold')$/;"	kind:variable	line:80
+MinKineticEnergyThreshold	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    MinKineticEnergyThreshold = fp.getfloat('MinKineticEnergyThreshold')$/;"	kind:variable	line:81
+MinTrappedAirThreshold	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    MinTrappedAirThreshold = fp.getfloat('MinTrappedAirThreshold')$/;"	kind:variable	line:77
+MinWaveCrestsThreshold	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    MinWaveCrestsThreshold = fp.getfloat('MinWaveCrestsThreshold')$/;"	kind:variable	line:79
+OBJECT_OT_RunFoamSimulation	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^class OBJECT_OT_RunFoamSimulation(bpy.types.Operator):$/;"	kind:class	line:438
+OutputDataPath	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    OutputDataPath = paths['OutputDataPath']$/;"	kind:variable	line:54
+PROPERTIES_PT_FoamSimulationPanel	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^class PROPERTIES_PT_FoamSimulationPanel(bpy.types.Panel):$/;"	kind:class	line:509
+PlyFiles	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    PlyFiles = ou.getboolean('PlyFiles')$/;"	kind:variable	line:63
+SprayDensity	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    SprayDensity = fp.getfloat('SprayDensity')$/;"	kind:variable	line:85
+StartingTimeStep	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    StartingTimeStep = ts.getint('StartingTimeStep')$/;"	kind:variable	line:71
+TextFiles	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    TextFiles = ou.getboolean('TextFiles')$/;"	kind:variable	line:62
+TimeStep	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^        TimeStep = float(param.getAttribute("value"))$/;"	kind:variable	line:128
+VIEW3D_PT_DsphObjectPanel	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^class VIEW3D_PT_DsphObjectPanel(bpy.types.Panel):$/;"	kind:class	line:216
+VisualSPHysics.py	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	1;"	kind:file	line:1
+VtkDiffuseData	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    VtkDiffuseData = ou.getboolean('VtkDiffuseData')$/;"	kind:variable	line:65
+VtkFiles	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    VtkFiles = ou.getboolean('VtkFiles')$/;"	kind:variable	line:64
+VtkFluidData	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    VtkFluidData = ou.getboolean('VtkFluidData')$/;"	kind:variable	line:66
+XmlFile	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    XmlFile = paths['XmlFile']$/;"	kind:variable	line:57
+ZeroPadding	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    ZeroPadding = paths.getint('ZeroPadding')$/;"	kind:variable	line:53
+bl_context	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    bl_context = "physics"$/;"	kind:variable	line:513
+bl_idname	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    bl_idname = "dialog.browsefile"$/;"	kind:variable	line:331
+bl_idname	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    bl_idname = "foam.runsimulation"$/;"	kind:variable	line:439
+bl_idname	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    bl_idname = "mesh.dsph_object_add"$/;"	kind:variable	line:430
+bl_info	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^bl_info = {$/;"	kind:variable	line:20
+bl_label	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    bl_label = "Add a DualSPHysics Object"$/;"	kind:variable	line:431
+bl_label	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    bl_label = "DualSPHysics Object Properties"$/;"	kind:variable	line:217
+bl_label	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    bl_label = "DualSPHysics foam simulation"$/;"	kind:variable	line:510
+bl_label	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    bl_label = "Run Foam Simulation"$/;"	kind:variable	line:440
+bl_label	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    bl_label = "Select DualSPHysics VTK file"$/;"	kind:variable	line:332
+bl_options	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    bl_options = {'REGISTER', 'UNDO'}$/;"	kind:variable	line:432
+bl_region_type	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    bl_region_type = "CHANNELS"$/;"	kind:variable	line:335
+bl_region_type	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    bl_region_type = "UI"$/;"	kind:variable	line:219
+bl_region_type	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    bl_region_type = "WINDOW"$/;"	kind:variable	line:512
+bl_space_type	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    bl_space_type = "FILE_BROWSER"$/;"	kind:variable	line:334
+bl_space_type	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    bl_space_type = "PROPERTIES"$/;"	kind:variable	line:511
+bl_space_type	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    bl_space_type = "VIEW_3D"$/;"	kind:variable	line:218
+classes	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^classes = ($/;"	kind:variable	line:902
+config	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^config = configparser.ConfigParser()$/;"	kind:variable	line:41
+createObject	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^def createObject (objName, fileName, pathName, baseName, extension, objType, smooth, validate, u/;"	kind:function	line:112
+deleteMesh	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^def deleteMesh (meshName):$/;"	kind:function	line:41
+do	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    do = config['DOMAIN']$/;"	kind:variable	line:92
+draw	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def draw(self, context):        $/;"	kind:member	line:638
+draw	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def draw(self, context):$/;"	kind:function	line:193
+draw	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def draw(self, context):$/;"	kind:member	line:317
+draw	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def draw(self, context):$/;"	kind:member	line:367
+execute	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def execute(self, context):$/;"	kind:member	line:376
+execute	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def execute(self, context):$/;"	kind:member	line:434
+execute	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def execute(self, context):$/;"	kind:member	line:442
+foam.py	../../../crucial/VisualSPHysics/foamsimulator/foam.py	1;"	kind:file	line:1
+fp	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    fp = config['FOAMPARAMETERS']$/;"	kind:variable	line:75
+getBlur	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def getBlur(self):$/;"	kind:member	line:269
+getSmooth	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def getSmooth(self):$/;"	kind:member	line:248
+getType	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def getType(self):$/;"	kind:member	line:225
+getUV	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def getUV(self):$/;"	kind:member	line:262
+getValidate	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def getValidate(self):$/;"	kind:member	line:255
+h	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^h = float(xdoc.getElementsByTagName("h")[0].getAttribute("value"))$/;"	kind:variable	line:123
+invoke	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def invoke(self, context, event):$/;"	kind:member	line:424
+magnitude	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^def magnitude(v):$/;"	kind:function	line:50
+makeRope	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^def makeRope (vertices, lines):$/;"	kind:function	line:66
+mass	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^mass = float(xdoc.getElementsByTagName("massfluid")[0].getAttribute("value"))$/;"	kind:variable	line:124
+menu_func	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^def menu_func(self, context):$/;"	kind:function	line:897
+normalize	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^def normalize(v):$/;"	kind:function	line:53
+ou	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    ou = config['OUTPUT']$/;"	kind:variable	line:60
+parseXML	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^def parseXML(context):$/;"	kind:function	line:156
+pmax	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    pmax = xdoc.getElementsByTagName("pointmax")[0]$/;"	kind:variable	line:136
+pmin	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    pmin = xdoc.getElementsByTagName("pointmin")[0]$/;"	kind:variable	line:132
+poll	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def poll(self, context):$/;"	kind:member	line:314
+poll	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def poll(self, context):$/;"	kind:member	line:635
+postRenderHandler	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^def postRenderHandler (scene):$/;"	kind:function	line:888
+preRenderHandler	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^def preRenderHandler (scene):$/;"	kind:function	line:884
+register	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^def register():$/;"	kind:function	line:910
+setBlur	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def setBlur(self,value):$/;"	kind:member	line:272
+setSmooth	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def setSmooth(self,value):$/;"	kind:member	line:251
+setType	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def setType(self,value):$/;"	kind:member	line:237
+setUV	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def setUV(self,value):$/;"	kind:member	line:265
+setValidate	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^    def setValidate(self,value):$/;"	kind:member	line:258
+showPopup	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^def showPopup(text = "", title = "Info", icon = 'INFO'):$/;"	kind:function	line:192
+suc	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^suc = config.read(sys.argv[1])$/;"	kind:variable	line:42
+ts	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^    ts = config['TIMESTEPS']$/;"	kind:variable	line:69
+unregister	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^def unregister():$/;"	kind:function	line:927
+updateObjectProperty	../../../crucial/VisualSPHysics/blendermodule/VisualSPHysics.py	/^def updateObjectProperty(self, context):    $/;"	kind:function	line:198
+xdoc	../../../crucial/VisualSPHysics/foamsimulator/foam.py	/^xdoc = xml.dom.minidom.parse(XmlFile)$/;"	kind:variable	line:121

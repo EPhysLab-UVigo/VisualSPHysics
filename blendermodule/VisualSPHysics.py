@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # VisualSPHysics
-# Copyright (C) 2018 Orlando Garcia-Feal orlando@uvigo.es
+# Copyright (C) 2019 Orlando Garcia-Feal orlando@uvigo.es
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 bl_info = {
     "name": "VisualSPHysics Blender Addon",
     "category": "Object",
+    "blender": (2, 80, 0),
 }
 
 import bpy, sys, math, re, os, time, array, ctypes, bmesh, mathutils
@@ -129,7 +130,8 @@ def createObject (objName, fileName, pathName, baseName, extension, objType, smo
     newMesh.update(calc_edges=False)    # Update mesh with new data
 
     obj = bpy.data.objects.new(objName, newMesh)       # Create an object with that mesh
-    bpy.context.scene.objects.link(obj)                # Link object to scene
+    coll = bpy.context.view_layer.active_layer_collection.collection
+    coll.objects.link(obj) # Link object to scene
     
     # Smooth shading
     if smooth :
@@ -211,7 +213,7 @@ def updateObjectProperty(self, context):
     context.active_object['DsphEndFrame'] = self['DsphEndFrame']
     
 
-class DsphObjectPanel(bpy.types.Panel):
+class VIEW3D_PT_DsphObjectPanel(bpy.types.Panel):
     bl_label = "DualSPHysics Object Properties"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -325,20 +327,20 @@ class DsphObjectPanel(bpy.types.Panel):
             layout.prop(context.object, '["DsphStartFrame"]')
             layout.prop(context.object, '["DsphEndFrame"]')
 
-class BrowseFileOperator(bpy.types.Operator):
+class FILE_BROWSER_OT_BrowseFileOperator(bpy.types.Operator):
     bl_idname = "dialog.browsefile"
     bl_label = "Select DualSPHysics VTK file"
     
     bl_space_type = "FILE_BROWSER"
     bl_region_type = "CHANNELS"
     
-    filter_glob = StringProperty(default="*.vtk")
+    filter_glob: bpy.props.StringProperty(default="*.vtk")
 
-    filename = bpy.props.StringProperty()
+    filename: bpy.props.StringProperty()
 
-    directory = bpy.props.StringProperty(subtype='DIR_PATH')
+    directory: bpy.props.StringProperty(subtype='DIR_PATH')
     
-    DsphObjEnum = bpy.props.EnumProperty(
+    DsphObjEnum: bpy.props.EnumProperty(
             items = [('FLUID', 'Fluid Object', "", "MOD_WAVE", 0),
                     ('FOAM', 'Foam Object', "", "MOD_PARTICLES", 1), 
                     ('ROPE', 'Rope Object', "", "MOD_CURVE", 2), 
@@ -346,19 +348,19 @@ class BrowseFileOperator(bpy.types.Operator):
             name = "Object Type",
             description = "Select the type of object from a DualSPHysics simulation.")
     
-    DsphSmooth = BoolProperty(
+    DsphSmooth: bpy.props.BoolProperty(
         name = "Smooth Shading", 
         description = "Can lead to artifacts on glossy objects.")
 
-    DsphValidate = BoolProperty(
+    DsphValidate: bpy.props.BoolProperty(
         name = "Validate mesh", 
         description = "Check it in order to avoid artifacts on fluid objects.")
 
-    DsphUV = BoolProperty(
+    DsphUV: bpy.props.BoolProperty(
         name = "Transfer UV Maps", 
         description = "Needed for textured objects.")
         
-    DsphBlur = BoolProperty(
+    DsphBlur: bpy.props.BoolProperty(
         name = "Motion Blur", 
         description = "Enable motion blur for this object.") 
     
@@ -504,7 +506,7 @@ class OBJECT_OT_RunFoamSimulation(bpy.types.Operator):
 # TODO: scene properties to register/unregister functions 
 # http://blender.stackexchange.com/questions/2382/how-to-add-a-select-path-input-in-a-ui-addon-script
 # Foam simulation panel
-class FoamSimulationPanel(bpy.types.Panel):
+class PROPERTIES_PT_FoamSimulationPanel(bpy.types.Panel):
     bl_label = "DualSPHysics foam simulation"
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"
@@ -638,7 +640,7 @@ class FoamSimulationPanel(bpy.types.Panel):
         
         ds = False
         
-        layout.label("File paths:")
+        layout.label(text="File paths:")
 
         row = layout.row()
         row.alert = not os.path.isdir(bpy.path.abspath(context.scene.DsphFoamPath))
@@ -659,14 +661,14 @@ class FoamSimulationPanel(bpy.types.Panel):
         ds = ds or row.alert
         row.prop(context.scene, "DsphFoamXML")   
         
-        layout.label("Time range:")
+        layout.label(text="Time range:")
         row = layout.row()
         row.alert = context.scene.DsphFoamStart > context.scene.DsphFoamEnd
         ds = ds or row.alert
         row.prop(context.scene, "DsphFoamStart")
         row.prop(context.scene, "DsphFoamEnd")
         
-        layout.label("Configurable thresholds:")
+        layout.label(text="Configurable thresholds:")
         row = layout.row()
         row.alert = context.scene.DsphFoamMinTrappedAir > context.scene.DsphFoamMaxTrappedAir
         ds = ds or row.alert              
@@ -685,22 +687,22 @@ class FoamSimulationPanel(bpy.types.Panel):
         row.prop(context.scene, "DsphFoamMinKinetic")
         row.prop(context.scene, "DsphFoamMaxKinetic")
         
-        layout.label("Diffuse material volume:")
+        layout.label(text="Diffuse material volume:")
         layout.prop(context.scene, "DsphFoamTAMult")
         layout.prop(context.scene, "DsphFoamWCMult")
         
-        layout.label("Particle category:")
+        layout.label(text="Particle category:")
         layout.prop(context.scene, "DsphFoamSprayDensity")
         layout.prop(context.scene, "DsphFoamBubblesDensity")
         
-        layout.label("Foam lifetime:")
+        layout.label(text="Foam lifetime:")
         layout.prop(context.scene, "DsphFoamLifetime")
         
-        layout.label("Bubbles advection:")
+        layout.label(text="Bubbles advection:")
         layout.prop(context.scene, "DsphFoamBuoyancy")
         layout.prop(context.scene, "DsphFoamDrag")
         
-        layout.label("Domain limits:")
+        layout.label(text="Domain limits:")
         layout.prop(context.scene, "DsphFoamCustomDomain")
         
         domaincol = layout.column()
@@ -849,7 +851,7 @@ def DsphHandler (scene):
                     kb.value = 0.
                     kb.keyframe_insert("value",frame=nFrame-1)                  
 
-                    scene.update()
+                    scene.view_layers.update()
                     bm.free()
                     # =========================
                 elif do["DsphObjType"] == "OTHER":
@@ -874,6 +876,9 @@ def DsphHandler (scene):
                     kb.keyframe_insert("value",frame=nFrame+1)
                     kb.value = 0.
                     kb.keyframe_insert("value",frame=nFrame-1)                  
+
+                    scene.view_layers.update()
+                    bm.free()
                     
             
             deleteMesh(oldMesh.name)    
@@ -896,11 +901,22 @@ def menu_func(self, context):
     self.layout.operator("mesh.dsph_object_add", 
         text="DualSPHysics Object", 
         icon='MOD_FLUIDSIM')
- 
+
+classes = (
+    VIEW3D_PT_DsphObjectPanel, 
+    FILE_BROWSER_OT_BrowseFileOperator, 
+    MESH_OT_dsph_object_add,
+    OBJECT_OT_RunFoamSimulation, 
+    PROPERTIES_PT_FoamSimulationPanel
+)
+
 def register():
     print("Register")
-    bpy.utils.register_module(__name__)
-    bpy.types.INFO_MT_mesh_add.append(menu_func)
+
+    for cls in classes:
+        bpy.utils.register_class(cls)
+
+    bpy.types.VIEW3D_MT_mesh_add.append(menu_func)
 
     bpy.app.handlers.persistent(DsphHandler)
     bpy.app.handlers.persistent(preRenderHandler)
@@ -913,8 +929,11 @@ def register():
  
 def unregister():
     print("Unregister")
-    bpy.utils.unregister_module(__name__)
-    bpy.types.INFO_MT_mesh_add.remove(menu_func)
+
+    for cls in reversed(classes):
+        bpy.utils.unregister_class(cls)
+
+    bpy.types.VIEW3D_MT_mesh_add.append(menu_func)
     
     bpy.app.handlers.frame_change_pre.remove(DsphHandler)
     bpy.app.handlers.render_init.remove(preRenderHandler)
