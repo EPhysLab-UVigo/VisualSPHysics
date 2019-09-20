@@ -181,7 +181,7 @@ void DiffuseCalculator::runSimulation() {
   for (int nstep = sp.nstart; nstep <= sp.nend; nstep++) {
 
     std::sprintf(&seqnum[0], formats.c_str(), nstep);
-    std::string fileName = fs::path(sp.dataPath) / (sp.filePrefix + seqnum + ".vtk");
+    std::string fileName = (fs::path(sp.dataPath) / (sp.filePrefix + seqnum + ".vtk")).generic_string();
 
     std::cout << "\n\n=====================================================================\n";
     std::cout << "Opening: " << fileName << std::endl;
@@ -645,7 +645,7 @@ void DiffuseCalculator::runSimulation() {
 #endif
       if (sp.text_files) {
         // Save diffuse particles to simple text files
-        std::string outFilename = fs::path(sp.outputPath) / (sp.outputPreffix + seqnum + ".txt");
+		std::string outFilename = (fs::path(sp.outputPath) / (sp.outputPreffix + seqnum + ".txt")).generic_string();
         std::ofstream tfile(outFilename, std::ios::trunc);
         tfile.setf(std::ios::scientific);
 
@@ -672,8 +672,8 @@ void DiffuseCalculator::runSimulation() {
 #endif
       if (sp.ply_files) {
         std::vector<std::array<double, 3>> material;
-        std::string plyFilename = fs::path(sp.outputPath) / (sp.outputPreffix + seqnum +
-                                  ".spray.ply"),
+        std::string plyFilename = (fs::path(sp.outputPath) / (sp.outputPreffix + seqnum +
+                                  ".spray.ply")).generic_string(),
                     comment = "Case: " + sp.outputPreffix +
                               " Frame: " + seqnum + " Spray";
         PlyWriter output(plyFilename, sp.MINX, sp.MAXX, sp.MINY, sp.MAXY,
@@ -694,7 +694,7 @@ void DiffuseCalculator::runSimulation() {
       if (sp.ply_files) {
         std::vector<std::array<double, 3>> material;
         std::string plyFilename =
-                        fs::path(sp.outputPath) / (sp.outputPreffix + seqnum + ".foam.ply"),
+                        (fs::path(sp.outputPath) / (sp.outputPreffix + seqnum + ".foam.ply")).generic_string(),
                     comment = "Case: " + sp.outputPreffix +
                               " Frame: " + seqnum + " Foam";
         PlyWriter output(plyFilename, sp.MINX, sp.MAXX, sp.MINY, sp.MAXY,
@@ -714,8 +714,8 @@ void DiffuseCalculator::runSimulation() {
 #endif
       if (sp.ply_files) {
         std::vector<std::array<double, 3>> material;
-        std::string plyFilename = fs::path(sp.outputPath) / (sp.outputPreffix + seqnum +
-                                  ".bubbles.ply"),
+        std::string plyFilename = (fs::path(sp.outputPath) / (sp.outputPreffix + seqnum +
+                                  ".bubbles.ply")).generic_string(),
                     comment = "Case: " + sp.outputPreffix +
                               " Frame: " + seqnum + " Bubbles";
         PlyWriter output(plyFilename, sp.MINX, sp.MAXX, sp.MINY, sp.MAXY,
@@ -735,7 +735,7 @@ void DiffuseCalculator::runSimulation() {
 #endif
       if (sp.vtk_files) {
         std::string vtkFilename =
-            fs::path(sp.outputPath) / (sp.outputPreffix + seqnum + ".vtk");
+            (fs::path(sp.outputPath) / (sp.outputPreffix + seqnum + ".vtk")).generic_string();
         VtkDWriter output(vtkFilename, sp.MINX, sp.MAXX, sp.MINY, sp.MAXY,
                           sp.MINZ, sp.MAXZ, sp.h);
         output.setData(&ppPosit, &ppVel);
@@ -798,7 +798,7 @@ void DiffuseCalculator::runSimulation() {
         difpolydata->GetPointData()->AddArray(density);
 
         std::string outFilename =
-            fs::path(sp.outputPath) / (sp.outputPreffix + seqnum + "_diffuse.vtk");
+            (fs::path(sp.outputPath) / (sp.outputPreffix + seqnum + "_diffuse.vtk")).generic_string();
 
         vtkSmartPointer<vtkPolyDataWriter> writer =
             vtkSmartPointer<vtkPolyDataWriter>::New();
@@ -867,7 +867,7 @@ void DiffuseCalculator::runSimulation() {
         vtkSmartPointer<vtkPolyDataWriter> writer =
             vtkSmartPointer<vtkPolyDataWriter>::New();
         std::string outFilename =
-            fs::path(sp.outputPath) / (sp.outputPreffix + seqnum + "_fluid.vtk");
+            (fs::path(sp.outputPath) / (sp.outputPreffix + seqnum + "_fluid.vtk")).generic_string();
 				writer->SetFileTypeToBinary();
         writer->SetFileName(outFilename.c_str());
         writer->SetInputData(ppolydata);

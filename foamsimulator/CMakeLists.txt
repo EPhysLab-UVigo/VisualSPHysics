@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
  
-find_package(PythonLibs 3 REQUIRED)
+find_package(PythonLibs 3.7 REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 find_package(VTK COMPONENTS vtkFiltersModeling vtkIOGeometry)
@@ -12,7 +12,7 @@ add_library(diffuseparticles SHARED ${SRCS})
 
 add_subdirectory( rply )
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
@@ -27,8 +27,8 @@ if (NOT WIN32)
 endif ()
  
 if(VTK_LIBRARIES)
-  target_link_libraries(diffuseparticles ${VTK_LIBRARIES} ${PYTHON_LIBRARIES} stdc++fs)
+  target_link_libraries(diffuseparticles ${VTK_LIBRARIES} ${PYTHON_LIBRARIES})
 else()
-  target_link_libraries(diffuseparticles vtkHybrid ${PYTHON_LIBRARIES} stdc++fs)
+  target_link_libraries(diffuseparticles vtkHybrid ${PYTHON_LIBRARIES})
 endif()
 

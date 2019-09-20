@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
  
-find_package(PythonLibs 3 REQUIRED)
+find_package(PythonLibs 3.7 REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 find_package(VTK COMPONENTS vtkIOLegacy)
