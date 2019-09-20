@@ -58,6 +58,7 @@ extern "C"
      \return Pointer to a Python object that contains a tuple with the list of vertices, list of polygons and velocity vectors.
    */
   static PyObject * vtkimporter_loaddiffuse(PyObject *self, PyObject *args){
+    std::cerr<<"DEBUG: VtkImporter v1.5\n";
     const char * FILE_NAME;
 
     double step = 0.1;
@@ -142,8 +143,6 @@ extern "C"
     PyObject *vertices = PyList_New(output->GetPoints()->GetNumberOfPoints()),
       *velocity = PyList_New(output->GetPoints()->GetNumberOfPoints());
 
-    std::cerr<<"DEBUG: data read ok";
-
     for(long i=0; i < output->GetPoints()->GetNumberOfPoints(); i++){
       double *p = points->GetTuple(i),
 	      *v = pvel->GetTuple(i);
@@ -154,8 +153,6 @@ extern "C"
        						                               p[1] + step * v[1],
        						                               p[2] + step * v[2]));
     }
-
-    std::cerr<<"DEBUG: vertex read ok";
 
     vtkCellArray * polys = output->GetPolys();
     vtkIdType *indices; // This should be vtkSmartPointer or just regular pointer?
@@ -171,8 +168,6 @@ extern "C"
 	      PyList_SET_ITEM(faces, polyCount, Py_BuildValue("(iiii)",indices[0],indices[1],indices[2],indices[3]));
       }
     }
-
-    std::cerr<<"DEBUG: faces read ok";
 
     PyObject *ret = PyTuple_New(3);
     
@@ -190,6 +185,7 @@ extern "C"
      \return Pointer to a Python object that contains a tuple with the list of vertices and list of polygons.
    */
   static PyObject * vtkimporter_loadrope(PyObject *self, PyObject *args){
+    std::cerr<<"DEBUG: VtkImporter v1.5\n";
     const char * FILE_NAME;
 
     if(!PyArg_ParseTuple(args, "s", &FILE_NAME))

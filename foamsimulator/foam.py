@@ -23,7 +23,7 @@
 
 import configparser
 import sys
-import xml.dom.minidom
+import xml.etree.ElementTree as ET
 
 #Change this for the location of foam simulator module:
 sys.path.append("/path/to/VisualSPHysics/build")
@@ -118,25 +118,24 @@ except:
 
 # Ok now we have the data
 
-xdoc = xml.dom.minidom.parse(XmlFile)
+tree = ET.parse(XmlFile)
+root = tree.getroot()
 
-h = float(xdoc.getElementsByTagName("h")[0].getAttribute("value"))
-mass = float(xdoc.getElementsByTagName("massfluid")[0].getAttribute("value"))
+h = float(root.find("./execution/constants/h").get("value"))
+mass = float(root.find("./execution/constants/massfluid").get("value"))
 
-for param in xdoc.getElementsByTagName("parameter") :
-    if param.getAttribute("key") == "TimeOut" :
-        TimeStep = float(param.getAttribute("value"))
+TimeStep = float(root.find("./execution/parameters/parameter[@key='TimeOut']").get("value"))
 
 if not CustomDomain:
     #Get domain from xml file
-    pmin = xdoc.getElementsByTagName("pointmin")[0]
-    DomainMinx = float(pmin.getAttribute("x"))
-    DomainMiny = float(pmin.getAttribute("y"))
-    DomainMinz = float(pmin.getAttribute("z"))
-    pmax = xdoc.getElementsByTagName("pointmax")[0]
-    DomainMaxx = float(pmax.getAttribute("x"))
-    DomainMaxy = float(pmax.getAttribute("y"))
-    DomainMaxz = float(pmax.getAttribute("z"))
+    pmin = root.find("./casedef/geometry/definition/pointmin")
+    DomainMinx = float(pmin.get("x"))
+    DomainMiny = float(pmin.get("y"))
+    DomainMinz = float(pmin.get("z"))
+    pmax = root.find("./casedef/geometry/definition/pointmax")
+    DomainMaxx = float(pmax.get("x"))
+    DomainMaxy = float(pmax.get("y"))
+    DomainMaxz = float(pmax.get("z"))
 
 diffuseparticles.run(InputDataPath,
                      InputFilesPrefix,

@@ -43,7 +43,6 @@ def deleteMesh (meshName):
     try:
         mesh.user_clear()
         bpy.data.meshes.remove(mesh)
-        print("Mesh succesfully removed")
     except:
         print("Cannot remove mesh from memory")
 
@@ -751,7 +750,7 @@ def DsphHandler (scene):
                 print("Error: The following file does not exists: " + fileName)
                 return
 
-            print("Loading " + fileName + " ...")
+            print("Reading file " + fileName + " ...")
 
             pts = []
             tris = []
@@ -771,7 +770,7 @@ def DsphHandler (scene):
                 print("Error: cant read "+fileName)
                 return
             
-            print("Done!")    
+            print("Reading finished!")    
 
             newMesh = bpy.data.meshes.new(do.name + 'Mesh' + str(nFrame)) # New mesh
             newMesh.from_pydata(pts,[],tris)   # edges or faces should be [], or you ask for problems
@@ -796,37 +795,38 @@ def DsphHandler (scene):
                     newMesh.uv_textures.new()
                     uv_other = newMesh.uv_layers.active
                     if not uv_other:
-                        self.report({'ERROR'}, "Could not add "
-                                    "a new UV map tp object "
-                                    "'%s' (Mesh '%s')\n"
-                                    % (obj.name,
-                                       newMesh.name,
-                                       ),
-                                    )
+                        self.report({'ERROR'}, "Could not add a new UV map tp object "
+                                    "'%s' (Mesh '%s')\n" % (obj.name, newMesh.name,),)
 
                     # finally do the copy
                     uv_other.data.foreach_set("uv", uv_array)
 
-            # Copy materials
-            try:
-                for tempMaterial in oldMesh.materials:
-                    if tempMaterial != None:
-                        newMesh.materials.append(tempMaterial)
-                        
-                if(oldMesh.polygons.__len__() == newMesh.polygons.__len__()):
-                    for i in range(0, oldMesh.polygons.__len__()) :
-                        newMesh.polygons[i].material_index = oldMesh.polygons[i].material_index
-            except:
-                pass
+                newMesh.update(calc_edges=False)
+
+            # Copy materials           
+            for tempMaterial in oldMesh.materials:
+                if tempMaterial != None:
+                    newMesh.materials.append(tempMaterial)
+            newMesh.update(calc_edges=False)
+                    
+            # This is to copy materials for floating objects
+            # TODO: debug this
+            if(do["DsphObjType"] == "OTHER" and 
+               oldMesh.polygons.__len__() == newMesh.polygons.__len__()):
+                for i in range(0, oldMesh.polygons.__len__()) :
+                    newMesh.polygons[i].material_index = oldMesh.polygons[i].material_index
+                newMesh.update(calc_edges=False)
 
             # Smooth shading
             if do["DsphSmooth"]:
                 for poly in newMesh.polygons:
                     poly.use_smooth = (do["DsphSmooth"] == True)
+                newMesh.update(calc_edges=False)
 
             if do["DsphValidate"]:    
                 newMesh.validate()
-            newMesh.update()   
+                
+            newMesh.update(calc_edges=False)
             do.data=newMesh
 
             # Motion blur code
@@ -878,11 +878,10 @@ def DsphHandler (scene):
                     kb.keyframe_insert("value",frame=nFrame-1)                  
 
                     scene.view_layers.update()
-                    bm.free()
-                    
+                    bm.free()                    
             
-            deleteMesh(oldMesh.name)    
-
+            deleteMesh(oldMesh.name)  
+            print("Object updated!")  
 
 def preRenderHandler (scene):
     bpy.app.handlers.frame_change_pre.remove(DsphHandler)

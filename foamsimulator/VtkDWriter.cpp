@@ -53,6 +53,7 @@ void VtkDWriter::setData(std::vector<std::array<double, 3>> *d,
     for (long i = 0; i < bucket.size(); i++) {
       auto newp = bucket[i];
       int psize = 1;
+      // Merge very close particles
       for (long j = 0; j < bucket.size(); j++) {
         if (j != i && (ops::magnitude(ops::substract(
                            bucket[i].pos, bucket[j].pos)) < (h / 5))) {
