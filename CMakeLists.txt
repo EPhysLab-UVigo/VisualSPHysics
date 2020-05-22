@@ -10,3 +10,11 @@ endif()
 
 add_subdirectory(foamsimulator)
 add_subdirectory(vtkimporter)
+
+INSTALL(FILES ${PROJECT_SOURCE_DIR}/blendermodule/VisualSPHysics.py DESTINATION ".")
+
+SET(CPACK_GENERATOR "ZIP")
+SET(CPACK_ARCHIVE_FILE_NAME "visualsphysics")
+SET(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)
+
+INCLUDE(CPack)

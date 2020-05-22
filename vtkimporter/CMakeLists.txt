@@ -20,3 +20,10 @@ else()
   target_link_libraries(vtkimporter ${PYTHON_LIBRARIES} vtkHybrid )
 endif()
 
+if (WIN32)
+  set_target_properties(vtkimporter PROPERTIES SUFFIX ".pyd")
+endif()
+
+INSTALL(TARGETS vtkimporter DESTINATION ".")
+
+INCLUDE(CPack)

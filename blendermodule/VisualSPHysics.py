@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # VisualSPHysics
-# Copyright (C) 2019 Orlando Garcia-Feal orlando@uvigo.es
+# Copyright (C) 2020 Orlando Garcia-Feal orlando@uvigo.es
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -451,7 +451,6 @@ class OBJECT_OT_RunFoamSimulation(bpy.types.Operator):
                     context.scene.DsphFoamEnd,                          # Ending timestep
                     4,                                                  # Zero padding
                     False,                                              # Output text files
-                    False,                                              # Output ply files
                     True,                                               # Output vtk files
                     False,                                              # Output vtk extra info files
                     False,                                              # Output vtk fluid info files

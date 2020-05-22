@@ -1,5 +1,5 @@
 // VisualSPHysics
-// Copyright (C) 2019 Orlando Garcia-Feal orlando@uvigo.es
+// Copyright (C) 2020 Orlando Garcia-Feal orlando@uvigo.es
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 #include <random>
 #include <vector>
 
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
 
@@ -52,7 +53,6 @@ namespace fs = std::experimental::filesystem;
 #include <vtkSTLWriter.h>
 
 #include "FluidData.h"
-#include "PlyWriter.h"
 #include "VtkDWriter.h"
 
 #include "BucketContainer.h"
@@ -661,73 +661,6 @@ void DiffuseCalculator::runSimulation() {
           tfile << " " << ttype << std::endl;
         }
         tfile.close();
-      }
-
-      // Generate small icosphere per each diffuse particle and save to ply file
-      // 3 ply files per step will be generated one for foam, one spray and a
-      // third one for bubbles
-
-#ifndef _MSVC
-#pragma omp section
-#endif
-      if (sp.ply_files) {
-        std::vector<std::array<double, 3>> material;
-        std::string plyFilename = (fs::path(sp.outputPath) / (sp.outputPreffix + seqnum +
-                                  ".spray.ply")).generic_string(),
-                    comment = "Case: " + sp.outputPreffix +
-                              " Frame: " + seqnum + " Spray";
-        PlyWriter output(plyFilename, sp.MINX, sp.MAXX, sp.MINY, sp.MAXY,
-                         sp.MINZ, sp.MAXZ, sp.h);
-        output.setComment(comment);
-
-        for (long i = 0; i < ppIds.size(); i++)
-          if (ppDensity[i] < sp.SPRAY)
-            material.push_back(ppPosit[i]);
-
-        output.setData(&material);
-        output.write();
-      }
-
-#ifndef _MSVC
-#pragma omp section
-#endif
-      if (sp.ply_files) {
-        std::vector<std::array<double, 3>> material;
-        std::string plyFilename =
-                        (fs::path(sp.outputPath) / (sp.outputPreffix + seqnum + ".foam.ply")).generic_string(),
-                    comment = "Case: " + sp.outputPreffix +
-                              " Frame: " + seqnum + " Foam";
-        PlyWriter output(plyFilename, sp.MINX, sp.MAXX, sp.MINY, sp.MAXY,
-                         sp.MINZ, sp.MAXZ, sp.h);
-        output.setComment(comment);
-
-        for (long i = 0; i < ppIds.size(); i++)
-          if (ppDensity[i] > sp.SPRAY && ppDensity[i] < sp.BUBBLES)
-            material.push_back(ppPosit[i]);
-
-        output.setData(&material);
-        output.write();
-      }
-
-#ifndef _MSVC
-#pragma omp section
-#endif
-      if (sp.ply_files) {
-        std::vector<std::array<double, 3>> material;
-        std::string plyFilename = (fs::path(sp.outputPath) / (sp.outputPreffix + seqnum +
-                                  ".bubbles.ply")).generic_string(),
-                    comment = "Case: " + sp.outputPreffix +
-                              " Frame: " + seqnum + " Bubbles";
-        PlyWriter output(plyFilename, sp.MINX, sp.MAXX, sp.MINY, sp.MAXY,
-                         sp.MINZ, sp.MAXZ, sp.h);
-        output.setComment(comment);
-
-        for (long i = 0; i < ppIds.size(); i++)
-          if (ppDensity[i] > sp.BUBBLES)
-            material.push_back(ppPosit[i]);
-
-        output.setData(&material);
-        output.write();
       }
 
 #ifndef _MSVC

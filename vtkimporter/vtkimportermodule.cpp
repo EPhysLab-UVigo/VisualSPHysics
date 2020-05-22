@@ -1,5 +1,5 @@
 // VisualSPHysics
-// Copyright (C) 2019 Orlando Garcia-Feal orlando@uvigo.es
+// Copyright (C) 2020 Orlando Garcia-Feal orlando@uvigo.es
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -155,7 +155,7 @@ extern "C"
     }
 
     vtkCellArray * polys = output->GetPolys();
-    vtkIdType *indices; // This should be vtkSmartPointer or just regular pointer?
+    const vtkIdType *indices; // This should be vtkSmartPointer or just regular pointer?
     vtkIdType numberOfPoints;
     long polyCount = 0;
 
@@ -263,7 +263,7 @@ extern "C"
     }
 
     vtkCellArray * polys = output->GetPolys();
-    vtkIdType *indices;
+    const vtkIdType *indices;
     vtkIdType numberOfPoints;
     long polyCount = 0;
 

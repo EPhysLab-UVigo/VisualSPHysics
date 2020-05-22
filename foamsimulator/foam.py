@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # VisualSPHysics
-# Copyright (C) 2019 Orlando Garcia-Feal orlando@uvigo.es
+# Copyright (C) 2020 Orlando Garcia-Feal orlando@uvigo.es
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -60,7 +60,6 @@ try:
     ou = config['OUTPUT']
 
     TextFiles = ou.getboolean('TextFiles')
-    PlyFiles = ou.getboolean('PlyFiles')
     VtkFiles = ou.getboolean('VtkFiles')
     VtkDiffuseData = ou.getboolean('VtkDiffuseData')
     VtkFluidData = ou.getboolean('VtkFluidData')
@@ -146,7 +145,6 @@ diffuseparticles.run(InputDataPath,
                      EndingTimeStep,
                      ZeroPadding,
                      TextFiles,
-                     PlyFiles,
                      VtkFiles,
                      VtkDiffuseData,
                      VtkFluidData,

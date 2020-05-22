@@ -1,5 +1,5 @@
 // VisualSPHysics
-// Copyright (C) 2019 Orlando Garcia-Feal orlando@uvigo.es
+// Copyright (C) 2020 Orlando Garcia-Feal orlando@uvigo.es
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,7 +34,6 @@ struct SimulationParams {
     nend,				                        ///< Ending simulation time.
     nzeros,				                      ///< Padding of the time step string.
     text_files,                         ///< Points if output files in text format are enabled. Includes position and type of each particle.
-    ply_files,                          ///< Points if output files in Ply format are enabled. Includes the geometry of the particles.
     vtk_files,                          ///< Points if output files in Vtk format are enabled. Includes the position and the size of the particles.
     vtk_diffuse_data,                   ///< Points if output files in Vtk format are enabled. Includes position, velocity, id, type and density of the diffuse particles.
     vtk_fluid_data;                     ///< Points if output files in Vtk format are enabled. Includes information of the fluid particles for each time step of the simulation.
