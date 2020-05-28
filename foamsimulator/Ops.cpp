@@ -16,53 +16,39 @@
 
 #include "Ops.h"
 #include <iostream>
-#include <string>
 #include <numeric>
 #include <functional>
-#include <cstdio>
-#include <limits>
+#include <algorithm>
+#include <sstream>
 #include <cmath>
 #include <iomanip>
-#include <math.h>
 
 namespace ops {
 
-  void printArray(std::array<double,3> x){
-    std::cout<<std::setprecision(std::numeric_limits<long double>::digits10 + 1)<<"["<<x[0]<<" "<<x[1]<<" "<<x[2]<<"]"<<std::endl;
-  }
+  std::string vectorStats(std::vector<double> &vec){
+    auto v(vec);
+    auto q1 = v.size() / 4,
+         q2 = v.size() / 2,
+         q3 = 3 * v.size() / 4;
 
-  void printArray(std::array<int,3> x){
-    std::cout<<"["<<x[0]<<" "<<x[1]<<" "<<x[2]<<"]"<<std::endl;
-  }
+    std::ostringstream s;
 
-  template<typename T>
-  T dfmin(T a, T b)
-  {
-	  if (a < b)
-		  return a;
-	  return b;
-  }
+    std::nth_element(v.begin(), v.begin(), v.end());
+    s << "[Min: " << std::setw(11) << *v.begin() << " ] ";
 
-  template<typename T>
-  T dfmax(T a, T b)
-  {
-	  if (a > b)
-		  return a;
-	  return b;
-  }
+    std::nth_element(v.begin(), v.begin() + q1, v.end());
+    s << "[Q1: " << std::setw(11) << v[q1] << " ] ";
+ 
+    std::nth_element(v.begin(), v.begin() + q2, v.end());
+    s << "[Q2: " << std::setw(11) << v[q2] << " ] ";
+    
+    std::nth_element(v.begin(), v.begin() + q3, v.end());
+    s << "[Q3: " << std::setw(11) << v[q3] << " ] ";    
+ 
+    std::nth_element(v.begin(), v.end()-1, v.end());
+    s << "[Max: " << std::setw(11) << *(v.end()-1) << " ] ";
 
-  void printVectorStats(std::vector<double> v){
-    std::cout << "Mean: " << std::accumulate(v.begin(), v.end(), 0.0) / (double)v.size() << std::endl
-	      << "Min: " << std::accumulate(v.begin(), v.end(), std::numeric_limits<double>::max(), dfmin<double>) << std::endl
-	      << "Max: " << std::accumulate(v.begin(), v.end(), std::numeric_limits<double>::min(), dfmax<double>) << std::endl
-	      << "Min non-zero: " << std::accumulate(v.begin(), v.end(), std::numeric_limits<double>::max(),
-						     [](double a, double b){
-						       if (a == 0.0)
-							 return b;
-						       else if (b == 0.0)
-							 return a;
-						       return fmin(a,b);
-						     }) << std::endl;
+    return s.str();
   }
 
   // Velocity difference between two particles

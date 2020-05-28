@@ -19,30 +19,21 @@
 
 #include <array>
 #include <vector>
+#include <string>
 
 /**
    \brief This namespace groups some common math functions.
    This namespace includes several math operations used in some stages of the simulation.
  */
 namespace ops {
-  /**
-     Prints to stdout the contents of a three component array. Debug only.
-     \param x Double array of three elements.
-   */
-  void printArray(std::array<double,3> x);
 
   /**
-     Prints to stdout the contents of a three component array. Debug only.
-     \param x Int array of three elements.
+     Compute several statistics of a vector.
+     The statistics computed are the minimum, maximum and Q1, Q2 and Q3 quartiles.
+     \param vec Vector of type double.
+     \param std::string with the stats
   */
-  void printArray(std::array<int,3> x);
-
-  /**
-     Prints to stdout several statistics of a vector.
-     The statistics computed are the mean, minimum, maximum and non-zero minimum.
-     \param v Vector of type double.
-  */
-  void printVectorStats(std::vector<double> v);
+  std::string vectorStats(std::vector<double> &vec);
 
   /**
      Substraction component by component of two double arrays of three components.

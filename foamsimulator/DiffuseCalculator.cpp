@@ -183,7 +183,7 @@ void DiffuseCalculator::runSimulation() {
     std::sprintf(&seqnum[0], formats.c_str(), nstep);
     std::string fileName = (fs::path(sp.dataPath) / (sp.filePrefix + seqnum + ".vtk")).generic_string();
 
-    std::cout << "\n\n=====================================================================\n";
+    std::cout << "\n\n== [" << " Step " << nstep << " of " << sp.nend << " ] ===================================================================\n";
     std::cout << "Opening: " << fileName << std::endl;
 
     FluidData file(sp.MINX, sp.MAXX, sp.MINY, sp.MAXY, sp.MINZ, sp.MAXZ, sp.h);
@@ -209,9 +209,9 @@ void DiffuseCalculator::runSimulation() {
 
     std::cout << "Total fluid particles: " << npoints << std::endl;
 
-    std::cerr << "\n[Stage 1] trapped air potential, Energy and colorfield. ";
+    std::cerr << "\n[Stage 1] trapped air potential, energy and colorfield..." << std::endl;
 
-    double wall_timer = omp_get_wtime();
+
     auto &buckets = f.getNoEmptyBuckets();
 
     /*
@@ -277,14 +277,14 @@ void DiffuseCalculator::runSimulation() {
       }
     }
 
-    std::cout << "Time: " << omp_get_wtime() - wall_timer << std::endl;
 
-    std::cerr << "[Stage 2] gradient. ";
+
+    std::cerr << "[Stage 2] gradient... " << std::endl;
     /*
      * Second pass: gradient
      */
     {
-      wall_timer = omp_get_wtime();
+
 
 #pragma omp parallel for schedule(guided)
       for (long nebucket = 0; nebucket < buckets.size();
@@ -315,15 +315,12 @@ void DiffuseCalculator::runSimulation() {
       }
     }
 
-    std::cout << "Time: " << omp_get_wtime() - wall_timer << std::endl;
+    std::cerr << "[Stage 3] wave crests... " << std::endl;
 
-    std::cerr << "[Stage 3] wave crests. ";
     /*
      * Third pass: wave crests
      */
     {
-
-      wall_timer = omp_get_wtime();
 
 #pragma omp parallel for schedule(guided)
       for (long nebucket = 0; nebucket < buckets.size(); nebucket++) { // Iterate over all buckets
@@ -344,23 +341,25 @@ void DiffuseCalculator::runSimulation() {
           }
         }
       }
-      std::cout << "Time: " << omp_get_wtime() - wall_timer << std::endl;
+
     }
 
-    std::cout << "\nStatistics " << std::endl << "===========" << std::endl;
+    std::string stats = std::string("Wave crests: ")
+      + ops::vectorStats(waveCrest) 
+      + "\n"
+      + "Trapped air: "
+      + ops::vectorStats(Ita)
+      + "\n"
+      + "Energy:      "
+      + ops::vectorStats(energy);
+      + "\n";
 
-    std::cout << "*** Wave crests ***" << std::endl;
-    ops::printVectorStats(waveCrest);
-    std::cout << "*** Trapped air ***" << std::endl;
-    ops::printVectorStats(Ita);
-    std::cout << "*** Energy ***" << std::endl;
-    ops::printVectorStats(energy);
+    std::cerr << "[Stage 4] clamping function... " << std::endl;
 
-    std::cerr << "\n[Stage 4] clamping function. ";
     /*
      * Fourth pass: clamping function
      */
-    wall_timer = omp_get_wtime();
+
 
 #ifndef _MSVC
 #pragma omp parallel for simd
@@ -373,7 +372,7 @@ void DiffuseCalculator::runSimulation() {
       energy[i] = phi(energy[i], sp.MINK, sp.MAXK);
     }
 
-    std::cout << "Time: " << omp_get_wtime() - wall_timer << std::endl;
+
 
     long npdiffuse = 0;
 
@@ -381,9 +380,11 @@ void DiffuseCalculator::runSimulation() {
     /*
      * Fifth pass: number of diffuse particles generated
      */
-    wall_timer = omp_get_wtime();
+
 #ifndef _MSVC
 #pragma omp parallel for simd reduction(+ : npdiffuse)
+#else
+#pragma omp parallel for reduction(+ : npdiffuse)
 #endif
     for (long i = 0; i < npoints; i++) {
       ndiffuse[i] = std::floor(
@@ -391,10 +392,10 @@ void DiffuseCalculator::runSimulation() {
       npdiffuse += ndiffuse[i];
     }
 
-    std::cout << npdiffuse << " Time: " << omp_get_wtime() - wall_timer
-              << std::endl;
+    std::cerr << npdiffuse << std::endl;
 
-    std::cerr << "[Stage 6] calculate diffuse particle positions. ";
+    std::cerr << "[Stage 6] calculate diffuse particle positions... " << std::endl;
+
     /*
      * Sixth pass: calculate diffuse particle positions
      */
@@ -410,7 +411,7 @@ void DiffuseCalculator::runSimulation() {
 		for (auto &x : tempRand)
 			x = xunif(gen);
 
-    wall_timer = omp_get_wtime();
+
 
     {
       long idif = 0;
@@ -489,12 +490,9 @@ void DiffuseCalculator::runSimulation() {
       }
     }
 
-    std::cout << "Time: " << omp_get_wtime() - wall_timer << std::endl;
-
     // Seventh pass: classify particles
     //[0-6]Spray [6-20]Foam [20..]Bubbles ¿?
-    std::cerr << "[Stage 7] classify particles. ";
-    wall_timer = omp_get_wtime();
+    std::cerr << "[Stage 7] classify particles... " << std::endl;;
 
 #pragma omp parallel for schedule(guided)
     for (long i = 0; i < npdiffuse; i++) {
@@ -509,13 +507,9 @@ void DiffuseCalculator::runSimulation() {
       }
     }
 
-    std::cout << "Time: " << omp_get_wtime() - wall_timer << std::endl;
-
     // Update particles
 
-    std::cerr << "[Stage 8] Update particles! ";
-
-    wall_timer = omp_get_wtime();
+    std::cerr << "[Stage 8] update particles... " << std::endl;;
 
 #pragma omp parallel for schedule(guided)
     for (long i = 0; i < ppIds.size(); i++) {
@@ -574,18 +568,13 @@ void DiffuseCalculator::runSimulation() {
       }
     }
 
-    std::cout << "Time: " << omp_get_wtime() - wall_timer << std::endl;
-
     // Delete particles
-    std::cerr << "[Stage 9] Delete particles! ";
+    std::cerr << "[Stage 9] delete particles... ";
 
     std::vector<std::array<double, 3>> tempPosit, tempVel;
     std::vector<int> tempIds, tempTTL;
     std::vector<double> tempDensity;
 
-    wall_timer = omp_get_wtime();
-
-    // #pragma omp parallel for schedule(auto)
     for (long i = 0; i < ppIds.size(); i++) {
       // Decrease TTL for foam particles
       if (ppDensity[i] > sp.SPRAY && ppDensity[i] < sp.BUBBLES)
@@ -610,11 +599,11 @@ void DiffuseCalculator::runSimulation() {
 		ppDensity = std::move(tempDensity);
 		ppTTL = std::move(tempTTL);
 
-    std::cout << "Deleted: " << ppIds.size() - tempIds.size();
-    std::cout << " Time: " << omp_get_wtime() - wall_timer << std::endl;
+    std::cout << "Deleted: " << ppIds.size() - tempIds.size() << std::endl;
+
 
     // Append new particles
-    std::cerr << "[Stage 10] Append new particles! Total diffuse particles: "
+    std::cerr << "[Stage 10] append new particles. Total diffuse particles: "
               << ppIds.size() << std::endl;
 
     if (npdiffuse > 0) {
@@ -625,15 +614,10 @@ void DiffuseCalculator::runSimulation() {
       std::copy(diffuseTTL.begin(), diffuseTTL.end(), std::back_inserter(ppTTL));
     }
 
-    std::cout << "\n*** Density ***" << std::endl;
-    ops::printVectorStats(ppDensity);
-
     /*
      * Write diffuse particle files
      */
-    std::cout << "\n[Stage 11] Save to file! ";
-
-    wall_timer = omp_get_wtime();
+    std::cerr << "[Stage 11] save to file... " << std::endl; 
 
 #ifndef _MSVC
 #pragma omp parallel sections
@@ -807,6 +791,10 @@ void DiffuseCalculator::runSimulation() {
         writer->Write();
       }
     }
-    std::cout << "Time: " << omp_get_wtime() - wall_timer << std::endl;
+
+    std::cerr << std::endl
+      << "=== Statistics:" << std::endl
+      << stats;
+
   }
 }

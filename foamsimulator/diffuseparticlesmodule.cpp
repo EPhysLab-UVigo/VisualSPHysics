@@ -30,7 +30,7 @@ extern "C"
     const char * dataPath, * filePrefix, * outputPath, * outputPreffix, * exclusionZoneFile;
     SimulationParams sp;
 
-    if(!PyArg_ParseTuple(args, "sssssiiipppppdddddddddddddddddddddd",
+    if(!PyArg_ParseTuple(args, "sssssiiippppdddddddddddddddddddddd",
 			 &dataPath,
 			 &filePrefix,
 			 &outputPath,
