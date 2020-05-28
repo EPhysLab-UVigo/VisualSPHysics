@@ -4,6 +4,11 @@ find_package(PythonLibs 3 REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 find_package(VTK COMPONENTS vtkFiltersModeling vtkIOGeometry)
+
+if (VTK_VERSION VERSION_GREATER_EQUAL "8.90.0")
+  add_definitions(-DVTK9)
+endif()
+
 include(${VTK_USE_FILE})
 
 set(SRCS FluidData.cpp VtkDWriter.cpp Ops.cpp DiffuseCalculator.cpp diffuseparticlesmodule.cpp)

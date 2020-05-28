@@ -155,7 +155,13 @@ extern "C"
     }
 
     vtkCellArray * polys = output->GetPolys();
-    const vtkIdType *indices; // This should be vtkSmartPointer or just regular pointer?
+    
+    #ifdef VTK9
+    const vtkIdType *indices;
+    #else
+    vtkIdType *indices;
+    #endif
+    
     vtkIdType numberOfPoints;
     long polyCount = 0;
 
@@ -263,7 +269,13 @@ extern "C"
     }
 
     vtkCellArray * polys = output->GetPolys();
+
+    #ifdef VTK9
     const vtkIdType *indices;
+    #else
+    vtkIdType *indices;
+    #endif
+    
     vtkIdType numberOfPoints;
     long polyCount = 0;
 
