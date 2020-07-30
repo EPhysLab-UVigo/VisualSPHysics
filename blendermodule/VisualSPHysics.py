@@ -782,7 +782,7 @@ def DsphHandler (scene):
             oldMesh = do.data              
              
             #Transfer UVMaps. Based on source code from Blender's object.py file.
-            if do["DsphUV"] and oldMesh.uv_textures :
+            if do["DsphUV"] and oldMesh.uv_layers :
                 nbr_loops = len(oldMesh.loops)
 
                 # seems to be the fastest way to create an array
@@ -791,11 +791,11 @@ def DsphHandler (scene):
 
                 uv_other = newMesh.uv_layers.active
                 if not uv_other:
-                    newMesh.uv_textures.new()
+                    newMesh.uv_layeras.new()
                     uv_other = newMesh.uv_layers.active
                     if not uv_other:
-                        self.report({'ERROR'}, "Could not add a new UV map tp object "
-                                    "'%s' (Mesh '%s')\n" % (obj.name, newMesh.name,),)
+                        self.report({'ERROR'}, "Could not add a new UV map to object "
+                                    f"'{obj.name}' (Mesh '{newMesh.name}')\n")
 
                     # finally do the copy
                     uv_other.data.foreach_set("uv", uv_array)
