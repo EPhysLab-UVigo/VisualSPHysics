@@ -3,8 +3,10 @@ VisualSPHysics is an add-on for [Blender](https://www.blender.org/) that allows 
 
 VisualSPHysics also includes a foam simulator for DualSPHysics fluid simulations. It is based on the method of [M. Ihmsen et al.](https://doi.org/10.1007/s00371-012-0697-9)
 
-More details about this tool can be read on the conference paper [Advanced fluid visualisation with DualSPHysics and Blender
-](https://www.researchgate.net/publication/321420314_Advanced_fluid_visualisation_with_DualSPHysics_and_Blender).
+More details about this tool can be read on the reference paper:
+
+[García-Feal, O., Crespo, A. J. C., & Gómez-Gesteira, M. **VisualSPHysics: advanced fluid visualization for SPH models**. Computational Particle Mechanics, 1-14.
+](https://link.springer.com/article/10.1007/s40571-020-00386-7).
 
 ![](http://dual.sphysics.org/blender/img/screenshot.png)
 
