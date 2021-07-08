@@ -4,6 +4,11 @@ find_package(PythonLibs 3.7 REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 find_package(VTK COMPONENTS vtkIOLegacy)
+
+if (VTK_VERSION VERSION_GREATER_EQUAL "8.90.0")
+  add_definitions(-DVTK9)
+endif()
+
 include(${VTK_USE_FILE})
 
 set(SRCS vtkimportermodule.cpp)
