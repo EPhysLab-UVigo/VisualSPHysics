@@ -26,7 +26,12 @@ bl_info = {
 import bpy, sys, math, re, os, time, array, ctypes, bmesh, mathutils
 import xml.etree.ElementTree as ET
 
- 
+if sys.version_info[1]>=8 and os.name == 'nt':
+    if "VTK_DLL_PATH" in os.environ:
+        os.add_dll_directory(os.environ['VTK_DLL_PATH'])
+    else:
+        raise ValueError('Python 3.8 and higher requires VTK_DLL_PATH to be set in environment')
+
 import vtkimporter 
 import diffuseparticles
 
