@@ -25,7 +25,7 @@ bl_info = {
 
 import bpy, sys, math, re, os, time, array, ctypes, bmesh, mathutils
 import xml.etree.ElementTree as ET
-
+import traceback
  
 import vtkimporter 
 import diffuseparticles
@@ -156,9 +156,17 @@ def parseXML(context):
     fpath = bpy.path.abspath(context.scene.DsphFoamXML)
     
     if os.path.isfile(fpath) :
+        with open(fpath) as f:
+          xmlString = f.readlines()
+          # Remove the first comment from xml files generated with DesignSPHysics
+          if (xmlString[0].count("<!--") > 0) :
+            xmlString = xmlString[1:]
+          xmlString = '\n'.join(xmlString)
+          
         try:
-            tree = ET.parse(fpath)
-            root = tree.getroot()
+            #tree = ET.parse(fpath)
+            #root = tree.getroot()
+            root = ET.fromstring(xmlString)            
             
             bpy.context.scene.DsphFoamH = float(root.find("./execution/constants/h").get("value"))
             context.scene.DsphFoamMass = float(root.find("./execution/constants/massfluid").get("value"))
@@ -174,10 +182,11 @@ def parseXML(context):
                 context.scene.DsphFoamMaxX = float(pmax.get("x"))
                 context.scene.DsphFoamMaxY = float(pmax.get("y"))
                 context.scene.DsphFoamMaxZ = float(pmax.get("z"))
-            return True            
-        except:
-            return False
-                        
+            return True
+        
+        except Exception:
+            print(traceback.format_exc())
+            return False                  
     else:
         return False
 
@@ -190,7 +199,7 @@ from bpy.props import *
 
 def showPopup(text = "", title = "Info", icon = 'INFO'):
     def draw(self, context):
-        self.layout.label(text)
+        self.layout.label(text=text)
     bpy.context.window_manager.popup_menu(draw, title = title, icon = icon)
 
 
